@@ -1,6 +1,7 @@
-import { createFileRoute, Outlet } from '@tanstack/react-router';
+import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 import { useAuth } from '@/hooks/useAuth';
 import { Header } from '@/components/layout/Header';
+import { supabase } from '@/lib/supabase';
 
 /**
  * Authenticated Layout Route
@@ -9,12 +10,17 @@ import { Header } from '@/components/layout/Header';
  * Redirects to /login if user is not authenticated.
  */
 export const Route = createFileRoute('/_authenticated')({
+  beforeLoad: async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      throw redirect({ to: '/login' });
+    }
+  },
   component: AuthenticatedLayout,
 });
 
 function AuthenticatedLayout() {
-  const { user, loading } = useAuth();
-  const navigate = Route.useNavigate();
+  const { loading } = useAuth();
 
   // Show loading spinner while checking auth
   if (loading) {
@@ -26,12 +32,6 @@ function AuthenticatedLayout() {
         </div>
       </div>
     );
-  }
-
-  // Redirect to login if not authenticated
-  if (!user) {
-    navigate({ to: '/login' });
-    return null;
   }
 
   return (
