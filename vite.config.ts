@@ -16,4 +16,6 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  // GitHub Pages deployment config
+  base: process.env.GITHUB_PAGES === 'true' ? '/migrainelog/' : '/',
 })
