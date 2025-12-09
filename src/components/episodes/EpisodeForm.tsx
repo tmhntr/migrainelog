@@ -108,6 +108,7 @@ export const EpisodeForm = ({ episodeId, initialData, onSuccess }: EpisodeFormPr
   const updateMutation = useUpdateEpisodeMutation();
 
   const form = useForm<EpisodeFormData>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(episodeSchema) as any,
     defaultValues: {
       start_time: initialData?.start_time || '',
@@ -153,10 +154,12 @@ export const EpisodeForm = ({ episodeId, initialData, onSuccess }: EpisodeFormPr
       if (episodeId) {
         await updateMutation.mutateAsync({
           id: episodeId,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           updates: episodeData as any,
         });
         setSubmitSuccess('Episode updated successfully!');
       } else {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         await createMutation.mutateAsync(episodeData as any);
         setSubmitSuccess('Episode created successfully!');
         form.reset();
@@ -170,6 +173,7 @@ export const EpisodeForm = ({ episodeId, initialData, onSuccess }: EpisodeFormPr
 
   return (
     <Form {...form}>
+      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
       <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-8 max-w-3xl">
         {/* Success/Error Messages */}
         {submitSuccess && (

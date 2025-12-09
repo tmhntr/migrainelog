@@ -51,6 +51,7 @@ class EpisodeService {
 
     const { data, error } = await supabase
       .from('episodes')
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .insert(insertData as any)
       .select()
       .single();
@@ -74,6 +75,7 @@ class EpisodeService {
 
     updateData.updated_at = new Date().toISOString();
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updateMethod = supabase.from('episodes').update as any;
     const { data, error } = await updateMethod(updateData)
       .eq('id', id)
@@ -100,7 +102,7 @@ class EpisodeService {
     throw new Error('Not implemented');
   }
 
-  private transformEpisode(data: any): Episode {
+  private transformEpisode(data: Database['public']['Tables']['episodes']['Row']): Episode {
     return {
       ...data,
       start_time: new Date(data.start_time),
