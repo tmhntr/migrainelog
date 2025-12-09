@@ -4,7 +4,8 @@
  * Type-safe helper functions for working with the Supabase database
  */
 
-import type { EpisodeInsert, EpisodeUpdate, Medication } from '@/types/database';
+import type { EpisodeInsert, EpisodeUpdate } from '@/types/database';
+import type { Medication } from '@/types/episode';
 
 /**
  * Converts a Medication object to the JSONB format expected by the database
@@ -24,13 +25,13 @@ export function serializeMedication(medication: Medication): string {
 export function serializeMedications(medications: Medication[]): Array<{
   name: string;
   dosage: string;
-  time_taken: Date;
+  time_taken: string;
   effectiveness?: number;
 }> {
   return medications.map(med => ({
     name: med.name,
     dosage: med.dosage,
-    time_taken: med.time_taken,
+    time_taken: med.time_taken.toISOString(),
     effectiveness: med.effectiveness,
   }));
 }
