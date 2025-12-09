@@ -13,14 +13,14 @@ export const mockEpisode: Episode = {
     {
       name: 'Ibuprofen',
       dosage: '400mg',
-      time_taken: '2025-01-01T10:30:00Z',
+      time_taken: new Date('2025-01-01T10:30:00Z'),
       effectiveness: 3,
     },
   ],
   notes: 'Test episode notes',
   created_at: new Date('2025-01-01T10:00:00Z'),
   updated_at: new Date('2025-01-01T10:00:00Z'),
-};
+} as Episode;
 
 export const mockEpisodeMinimal: Episode = {
   id: 'test-episode-2',
@@ -35,6 +35,6 @@ export const mockEpisodeMinimal: Episode = {
   notes: null,
   created_at: new Date('2025-01-02T08:00:00Z'),
   updated_at: new Date('2025-01-02T08:00:00Z'),
-};
+} as Episode;
 
 export const mockEpisodes: Episode[] = [mockEpisode, mockEpisodeMinimal];

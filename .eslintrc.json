@@ -1,0 +1,17 @@
+{
+  "overrides": [
+    {
+      "files": ["**/__tests__/**/*", "**/*.test.*", "**/*.spec.*", "src/test/**/*"],
+      "rules": {
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-unused-vars": "off"
+      }
+    },
+    {
+      "files": ["src/test/utils.tsx"],
+      "rules": {
+        "react-refresh/only-export-components": "off"
+      }
+    }
+  ]
+}

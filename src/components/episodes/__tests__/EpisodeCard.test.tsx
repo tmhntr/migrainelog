@@ -6,8 +6,8 @@ import userEvent from '@testing-library/user-event';
 
 // Mock date utilities
 vi.mock('@/utils/date', () => ({
-  formatDate: vi.fn((date: Date) => 'January 1st, 2025'),
-  calculateDuration: vi.fn((start: Date, end: Date) => '4 hours'),
+  formatDate: vi.fn(() => 'January 1st, 2025'),
+  calculateDuration: vi.fn(() => '4 hours'),
 }));
 
 describe('EpisodeCard', () => {

@@ -22,7 +22,9 @@ vi.mock('@/lib/supabase', () => ({
 
 import { episodeService } from '../episodeService';
 import { supabase } from '@/lib/supabase';
-import { mockEpisode, mockEpisodes } from '@/test/fixtures/episodes';
+import type { Episode } from '@/types/episode';
+
+type CreateEpisode = Omit<Episode, 'id' | 'user_id' | 'created_at' | 'updated_at'>;
 
 // Setup mock implementations
 const setupMocks = () => {
@@ -172,12 +174,12 @@ describe('EpisodeService', () => {
           {
             name: 'Ibuprofen',
             dosage: '400mg',
-            time_taken: '2025-01-01T10:30:00Z',
+            time_taken: new Date('2025-01-01T10:30:00Z'),
             effectiveness: 3,
           },
         ],
         notes: 'Test episode',
-      };
+      } as CreateEpisode;
 
       const mockUser = { id: 'user-1' };
       mockGetUser.mockResolvedValueOnce({ data: { user: mockUser }, error: null });
@@ -218,7 +220,7 @@ describe('EpisodeService', () => {
         symptoms: [],
         triggers: [],
         medications: [],
-      };
+      } as CreateEpisode;
 
       await expect(episodeService.createEpisode(newEpisode)).rejects.toThrow(
         'User not authenticated'
@@ -234,7 +236,7 @@ describe('EpisodeService', () => {
         symptoms: [],
         triggers: [],
         medications: [],
-      };
+      } as CreateEpisode;
 
       const mockUser = { id: 'user-1' };
       mockGetUser.mockResolvedValueOnce({ data: { user: mockUser }, error: null });
@@ -299,7 +301,7 @@ describe('EpisodeService', () => {
           {
             name: 'Aspirin',
             dosage: '500mg',
-            time_taken: '2025-01-01T10:00:00Z',
+            time_taken: new Date('2025-01-01T10:00:00Z'),
             effectiveness: 4,
           },
         ],
