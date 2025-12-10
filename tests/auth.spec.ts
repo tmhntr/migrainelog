@@ -2,7 +2,6 @@ import { test, expect } from '@playwright/test';
 import {
   generateTestUser,
   signUp,
-  signIn,
   signOut,
   verifyProtectedRoute,
 } from './utils/auth-helpers';

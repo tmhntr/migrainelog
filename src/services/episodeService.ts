@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase';
-import type { Episode, EpisodeStats } from '@/types/episode';
+import type { Episode, EpisodeStats, PainLocation, Symptom, Trigger, Medication } from '@/types/episode';
 import type { Database } from '@/types/database';
 
 /**
@@ -51,6 +51,7 @@ class EpisodeService {
 
     const { data, error } = await supabase
       .from('episodes')
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .insert(insertData as any)
       .select()
       .single();
@@ -74,6 +75,7 @@ class EpisodeService {
 
     updateData.updated_at = new Date().toISOString();
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updateMethod = supabase.from('episodes').update as any;
     const { data, error } = await updateMethod(updateData)
       .eq('id', id)
@@ -100,12 +102,34 @@ class EpisodeService {
     throw new Error('Not implemented');
   }
 
-  private transformEpisode(data: any): Episode {
+  private transformEpisode(data: Database['public']['Tables']['episodes']['Row']): Episode {
+    // Parse medications from JSONB
+    let medications: Medication[] = [];
+    if (data.medications && Array.isArray(data.medications)) {
+      medications = (data.medications as Array<{
+        name: string;
+        dosage: string;
+        time_taken: string;
+        effectiveness?: number;
+      }>).map(m => ({
+        name: m.name,
+        dosage: m.dosage,
+        time_taken: new Date(m.time_taken),
+        effectiveness: m.effectiveness,
+      }));
+    }
+
     return {
-      ...data,
+      id: data.id,
+      user_id: data.user_id,
       start_time: new Date(data.start_time),
       end_time: data.end_time ? new Date(data.end_time) : null,
-      medications: data.medications.map((m: string) => JSON.parse(m)),
+      severity: data.severity,
+      pain_location: data.pain_location as PainLocation[],
+      symptoms: data.symptoms as Symptom[],
+      triggers: data.triggers as Trigger[],
+      medications,
+      notes: data.notes,
       created_at: new Date(data.created_at),
       updated_at: new Date(data.updated_at),
     };

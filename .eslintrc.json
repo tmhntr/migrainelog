@@ -1,0 +1,34 @@
+{
+  "overrides": [
+    {
+      "files": ["**/__tests__/**/*", "**/*.test.*", "**/*.spec.*", "src/test/**/*", "tests/**/*"],
+      "rules": {
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-unused-vars": "off"
+      }
+    },
+    {
+      "files": ["src/test/utils.tsx"],
+      "rules": {
+        "react-refresh/only-export-components": "off"
+      }
+    },
+    {
+      "files": [
+        "src/components/ui/**/*.tsx",
+        "src/contexts/**/*.tsx"
+      ],
+      "rules": {
+        "react-refresh/only-export-components": ["warn", { "allowConstantExport": true }]
+      }
+    },
+    {
+      "files": ["src/services/**/*.ts", "src/lib/**/*.ts"],
+      "rules": {
+        "@typescript-eslint/no-explicit-any": ["error", {
+          "ignoreRestArgs": true
+        }]
+      }
+    }
+  ]
+}

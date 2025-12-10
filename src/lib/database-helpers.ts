@@ -4,7 +4,8 @@
  * Type-safe helper functions for working with the Supabase database
  */
 
-import type { EpisodeInsert, EpisodeUpdate, Medication } from '@/types/database';
+import type { EpisodeInsert, EpisodeUpdate } from '@/types/database';
+import type { Medication } from '@/types/episode';
 
 /**
  * Converts a Medication object to the JSONB format expected by the database
@@ -21,11 +22,16 @@ export function serializeMedication(medication: Medication): string {
 /**
  * Converts an array of Medication objects to JSONB
  */
-export function serializeMedications(medications: Medication[]): any {
+export function serializeMedications(medications: Medication[]): Array<{
+  name: string;
+  dosage: string;
+  time_taken: string;
+  effectiveness?: number;
+}> {
   return medications.map(med => ({
     name: med.name,
     dosage: med.dosage,
-    time_taken: med.time_taken,
+    time_taken: med.time_taken.toISOString(),
     effectiveness: med.effectiveness,
   }));
 }
@@ -229,6 +235,7 @@ export const VALID_TRIGGERS = [
  * Validates pain location values
  */
 export function validatePainLocation(location: string): boolean {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return VALID_PAIN_LOCATIONS.includes(location as any);
 }
 
@@ -236,6 +243,7 @@ export function validatePainLocation(location: string): boolean {
  * Validates symptom values
  */
 export function validateSymptom(symptom: string): boolean {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return VALID_SYMPTOMS.includes(symptom as any);
 }
 
@@ -243,6 +251,7 @@ export function validateSymptom(symptom: string): boolean {
  * Validates trigger values
  */
 export function validateTrigger(trigger: string): boolean {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return VALID_TRIGGERS.includes(trigger as any);
 }
 
