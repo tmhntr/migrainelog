@@ -21,8 +21,12 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <Outlet />
-        <ReactQueryDevtools initialIsOpen={false} />
-        <TanStackRouterDevtools position="bottom-right" />
+        {import.meta.env.DEV && (
+          <>
+            <ReactQueryDevtools initialIsOpen={false} />
+            <TanStackRouterDevtools position="bottom-right" />
+          </>
+        )}
       </AuthProvider>
     </QueryClientProvider>
   );
