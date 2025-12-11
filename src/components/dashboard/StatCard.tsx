@@ -18,13 +18,17 @@ export const StatCard = ({ title, value, subtitle, description, trend }: StatCar
   const displaySubtitle = subtitle || description;
 
   return (
-    <div className="p-6 bg-white border rounded-lg shadow-sm">
-      <h3 className="text-sm font-medium text-gray-600 mb-2">{title}</h3>
+    <div className="p-4 sm:p-5 lg:p-6 bg-white border rounded-lg shadow-sm hover:shadow-md transition-shadow">
+      <h3 className="text-xs sm:text-sm font-medium text-muted-foreground mb-2">
+        {title}
+      </h3>
       <div className="flex items-baseline gap-2">
-        <p className="text-3xl font-bold">{value}</p>
+        <p className="text-2xl sm:text-3xl lg:text-4xl font-bold truncate">
+          {value}
+        </p>
         {trend && (
           <span
-            className={`text-sm ${
+            className={`text-xs sm:text-sm shrink-0 ${
               trend.positive ? 'text-green-600' : 'text-red-600'
             }`}
           >
@@ -32,7 +36,11 @@ export const StatCard = ({ title, value, subtitle, description, trend }: StatCar
           </span>
         )}
       </div>
-      {displaySubtitle && <p className="text-sm text-gray-500 mt-1">{displaySubtitle}</p>}
+      {displaySubtitle && (
+        <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+          {displaySubtitle}
+        </p>
+      )}
     </div>
   );
 };

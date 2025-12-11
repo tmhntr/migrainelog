@@ -27,10 +27,10 @@ function AuthenticatedLayout() {
   // Show loading spinner while checking auth
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center p-4">
         <div className="text-center">
           <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
-          <p className="mt-4 text-muted-foreground">Loading...</p>
+          <p className="mt-4 text-sm sm:text-base text-muted-foreground">Loading...</p>
         </div>
       </div>
     );
@@ -39,7 +39,7 @@ function AuthenticatedLayout() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
         <Outlet />
       </main>
     </div>

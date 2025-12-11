@@ -65,12 +65,12 @@ function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <Card className="max-w-md w-full">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-3xl font-bold text-center">
+      <Card className="w-full max-w-md">
+        <CardHeader className="space-y-1 pb-4 sm:pb-6">
+          <CardTitle className="text-2xl sm:text-3xl font-bold text-center">
             Migraine Log
           </CardTitle>
-          <CardDescription className="text-center">
+          <CardDescription className="text-center text-sm sm:text-base">
             Sign in to track your migraine episodes
           </CardDescription>
         </CardHeader>
