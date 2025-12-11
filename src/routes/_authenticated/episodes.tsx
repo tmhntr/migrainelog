@@ -1,24 +1,24 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
-import { useEpisodesQuery } from '@/hooks/useEpisodesQuery';
-import { EpisodeCard } from '@/components/episodes/EpisodeCard';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
-import { useState } from 'react';
-import { EpisodeForm } from '@/components/episodes/EpisodeForm';
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEpisodesQuery } from "@/hooks/useEpisodesQuery";
+import { EpisodeCard } from "@/components/episodes/EpisodeCard";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import { useState } from "react";
+import { EpisodeForm } from "@/components/episodes/EpisodeForm";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
+} from "@/components/ui/dialog";
 
 /**
  * Episodes List Route (/episodes)
  *
  * Displays all migraine episodes with ability to create new ones
  */
-export const Route = createFileRoute('/_authenticated/episodes')({
+export const Route = createFileRoute("/_authenticated/episodes")({
   component: Episodes,
 });
 
@@ -72,16 +72,14 @@ function Episodes() {
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white">
           <DialogHeader>
-            <DialogTitle>New Episode</DialogTitle>
+            <DialogTitle role="heading">New Episode</DialogTitle>
             <DialogDescription>
               Record details about your migraine episode
             </DialogDescription>
           </DialogHeader>
-          <EpisodeForm
-            onSuccess={() => setIsDialogOpen(false)}
-          />
+          <EpisodeForm onSuccess={() => setIsDialogOpen(false)} />
         </DialogContent>
       </Dialog>
     </div>
