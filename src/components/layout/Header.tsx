@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import { useAuth } from '@/hooks/useAuth';
 
 /**
@@ -8,6 +8,7 @@ import { useAuth } from '@/hooks/useAuth';
  */
 export const Header = () => {
   const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <header className="border-b">
@@ -43,7 +44,10 @@ export const Header = () => {
             <div className="flex items-center gap-4">
               <span className="text-sm text-muted-foreground">{user.email}</span>
               <button
-                onClick={() => signOut()}
+                onClick={async () => {
+                  await signOut();
+                  navigate({ to: '/login' });
+                }}
                 className="text-sm text-destructive hover:text-destructive/80 transition-colors"
               >
                 Sign Out

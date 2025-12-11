@@ -232,6 +232,7 @@ export const EpisodeForm = ({ episodeId, initialData, onSuccess }: EpisodeFormPr
                 <FormControl>
                   <div className="pt-2">
                     <Slider
+                      name="severity"
                       min={1}
                       max={10}
                       step={1}
