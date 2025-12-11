@@ -1,7 +1,7 @@
-import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
-import { useAuth } from '@/hooks/useAuth';
-import { Header } from '@/components/layout/Header';
-import { supabase } from '@/lib/supabase';
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { useAuth } from "@/hooks/useAuth";
+import { Header } from "@/components/layout/Header";
+import { supabase } from "@/lib/supabase";
 
 /**
  * Authenticated Layout Route
@@ -9,11 +9,13 @@ import { supabase } from '@/lib/supabase';
  * Protects all child routes requiring authentication.
  * Redirects to /login if user is not authenticated.
  */
-export const Route = createFileRoute('/_authenticated')({
+export const Route = createFileRoute("/_authenticated")({
   beforeLoad: async () => {
-    const { data: { session } } = await supabase.auth.getSession();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
     if (!session) {
-      throw redirect({ to: '/login' });
+      throw redirect({ to: "/about" });
     }
   },
   component: AuthenticatedLayout,
