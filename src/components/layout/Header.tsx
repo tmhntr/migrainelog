@@ -1,6 +1,6 @@
-import { Link, useNavigate } from '@tanstack/react-router';
-import { useAuth } from '@/hooks/useAuth';
-import { Button } from '@/components/ui/button';
+import { Link, useNavigate } from "@tanstack/react-router";
+import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
@@ -8,10 +8,10 @@ import {
   SheetTitle,
   SheetTrigger,
   SheetClose,
-} from '@/components/ui/sheet';
-import { Menu } from 'lucide-react';
-import { useState } from 'react';
-
+} from "@/components/ui/sheet";
+import { Menu } from "lucide-react";
+import { useState } from "react";
+import { Brain } from "lucide-react";
 /**
  * Header Component
  *
@@ -29,7 +29,7 @@ export const Header = () => {
   const handleSignOut = async () => {
     await signOut();
     setIsOpen(false);
-    navigate({ to: '/about' });
+    navigate({ to: "/about" });
   };
 
   const handleNavigation = (to: string) => {
@@ -42,8 +42,11 @@ export const Header = () => {
       <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
         <div className="flex justify-between items-center">
           {/* Logo */}
-          <Link to="/" className="text-lg sm:text-xl font-bold hover:text-primary transition-colors">
-            Migraine Log
+          <Link
+            to="/"
+            className="text-lg flex place-items-center gap-2 sm:text-xl font-bold hover:text-primary transition-colors"
+          >
+            <Brain /> Migraine Log
           </Link>
 
           {/* Desktop Navigation */}
@@ -53,21 +56,21 @@ export const Header = () => {
                 <Link
                   to="/"
                   className="text-sm font-medium hover:text-primary transition-colors"
-                  activeProps={{ className: 'text-primary font-semibold' }}
+                  activeProps={{ className: "text-primary font-semibold" }}
                 >
                   Dashboard
                 </Link>
                 <Link
                   to="/episodes"
                   className="text-sm font-medium hover:text-primary transition-colors"
-                  activeProps={{ className: 'text-primary font-semibold' }}
+                  activeProps={{ className: "text-primary font-semibold" }}
                 >
                   Episodes
                 </Link>
                 <Link
                   to="/analysis"
                   className="text-sm font-medium hover:text-primary transition-colors"
-                  activeProps={{ className: 'text-primary font-semibold' }}
+                  activeProps={{ className: "text-primary font-semibold" }}
                 >
                   Analysis
                 </Link>
@@ -78,8 +81,9 @@ export const Header = () => {
                   </span>
                   <Button
                     onClick={handleSignOut}
-                    variant="destructive"
+                    variant="ghost"
                     size="sm"
+                    className=""
                   >
                     Sign Out
                   </Button>
@@ -87,7 +91,7 @@ export const Header = () => {
               </>
             ) : (
               <Button
-                onClick={() => navigate({ to: '/login' })}
+                onClick={() => navigate({ to: "/login" })}
                 variant="default"
                 size="sm"
               >
@@ -114,8 +118,12 @@ export const Header = () => {
                     <>
                       {/* User Info */}
                       <div className="pb-4 border-b">
-                        <p className="text-xs text-muted-foreground mb-1">Signed in as</p>
-                        <p className="text-sm font-medium truncate">{user.email}</p>
+                        <p className="text-xs text-muted-foreground mb-1">
+                          Signed in as
+                        </p>
+                        <p className="text-sm font-medium truncate">
+                          {user.email}
+                        </p>
                       </div>
 
                       {/* Navigation Links */}
@@ -123,7 +131,9 @@ export const Header = () => {
                         <Link
                           to="/"
                           className="text-base font-medium hover:text-primary transition-colors py-2"
-                          activeProps={{ className: 'text-primary font-semibold' }}
+                          activeProps={{
+                            className: "text-primary font-semibold",
+                          }}
                         >
                           Dashboard
                         </Link>
@@ -132,7 +142,9 @@ export const Header = () => {
                         <Link
                           to="/episodes"
                           className="text-base font-medium hover:text-primary transition-colors py-2"
-                          activeProps={{ className: 'text-primary font-semibold' }}
+                          activeProps={{
+                            className: "text-primary font-semibold",
+                          }}
                         >
                           Episodes
                         </Link>
@@ -141,7 +153,9 @@ export const Header = () => {
                         <Link
                           to="/analysis"
                           className="text-base font-medium hover:text-primary transition-colors py-2"
-                          activeProps={{ className: 'text-primary font-semibold' }}
+                          activeProps={{
+                            className: "text-primary font-semibold",
+                          }}
                         >
                           Analysis
                         </Link>
@@ -151,9 +165,9 @@ export const Header = () => {
                       <div className="pt-4 border-t">
                         <Button
                           onClick={handleSignOut}
-                          variant="destructive"
+                          variant="ghost"
                           size="sm"
-                          className="w-full"
+                          className="w-full bg-accent"
                         >
                           Sign Out
                         </Button>
@@ -161,7 +175,7 @@ export const Header = () => {
                     </>
                   ) : (
                     <Button
-                      onClick={() => handleNavigation('/login')}
+                      onClick={() => handleNavigation("/login")}
                       variant="default"
                       className="w-full"
                     >

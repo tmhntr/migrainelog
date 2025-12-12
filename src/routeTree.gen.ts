@@ -14,8 +14,8 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
-import { Route as AuthenticatedEpisodesRouteImport } from './routes/_authenticated/episodes'
 import { Route as AuthenticatedAnalysisRouteImport } from './routes/_authenticated/analysis'
+import { Route as AuthenticatedEpisodesIndexRouteImport } from './routes/_authenticated/episodes/index'
 import { Route as AuthenticatedEpisodesEpisodeIdRouteImport } from './routes/_authenticated/episodes/$episodeId'
 
 const SignupRoute = SignupRouteImport.update({
@@ -42,21 +42,22 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedEpisodesRoute = AuthenticatedEpisodesRouteImport.update({
-  id: '/episodes',
-  path: '/episodes',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
 const AuthenticatedAnalysisRoute = AuthenticatedAnalysisRouteImport.update({
   id: '/analysis',
   path: '/analysis',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedEpisodesIndexRoute =
+  AuthenticatedEpisodesIndexRouteImport.update({
+    id: '/episodes/',
+    path: '/episodes/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedEpisodesEpisodeIdRoute =
   AuthenticatedEpisodesEpisodeIdRouteImport.update({
-    id: '/$episodeId',
-    path: '/$episodeId',
-    getParentRoute: () => AuthenticatedEpisodesRoute,
+    id: '/episodes/$episodeId',
+    path: '/episodes/$episodeId',
+    getParentRoute: () => AuthenticatedRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -64,18 +65,18 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/analysis': typeof AuthenticatedAnalysisRoute
-  '/episodes': typeof AuthenticatedEpisodesRouteWithChildren
   '/': typeof AuthenticatedIndexRoute
   '/episodes/$episodeId': typeof AuthenticatedEpisodesEpisodeIdRoute
+  '/episodes': typeof AuthenticatedEpisodesIndexRoute
 }
 export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/analysis': typeof AuthenticatedAnalysisRoute
-  '/episodes': typeof AuthenticatedEpisodesRouteWithChildren
   '/': typeof AuthenticatedIndexRoute
   '/episodes/$episodeId': typeof AuthenticatedEpisodesEpisodeIdRoute
+  '/episodes': typeof AuthenticatedEpisodesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -84,9 +85,9 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/_authenticated/analysis': typeof AuthenticatedAnalysisRoute
-  '/_authenticated/episodes': typeof AuthenticatedEpisodesRouteWithChildren
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/episodes/$episodeId': typeof AuthenticatedEpisodesEpisodeIdRoute
+  '/_authenticated/episodes/': typeof AuthenticatedEpisodesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -95,18 +96,18 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/analysis'
-    | '/episodes'
     | '/'
     | '/episodes/$episodeId'
+    | '/episodes'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/about'
     | '/login'
     | '/signup'
     | '/analysis'
-    | '/episodes'
     | '/'
     | '/episodes/$episodeId'
+    | '/episodes'
   id:
     | '__root__'
     | '/_authenticated'
@@ -114,9 +115,9 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/_authenticated/analysis'
-    | '/_authenticated/episodes'
     | '/_authenticated/'
     | '/_authenticated/episodes/$episodeId'
+    | '/_authenticated/episodes/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -163,13 +164,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/episodes': {
-      id: '/_authenticated/episodes'
-      path: '/episodes'
-      fullPath: '/episodes'
-      preLoaderRoute: typeof AuthenticatedEpisodesRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/_authenticated/analysis': {
       id: '/_authenticated/analysis'
       path: '/analysis'
@@ -177,39 +171,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAnalysisRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/episodes/': {
+      id: '/_authenticated/episodes/'
+      path: '/episodes'
+      fullPath: '/episodes'
+      preLoaderRoute: typeof AuthenticatedEpisodesIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/episodes/$episodeId': {
       id: '/_authenticated/episodes/$episodeId'
-      path: '/$episodeId'
+      path: '/episodes/$episodeId'
       fullPath: '/episodes/$episodeId'
       preLoaderRoute: typeof AuthenticatedEpisodesEpisodeIdRouteImport
-      parentRoute: typeof AuthenticatedEpisodesRoute
+      parentRoute: typeof AuthenticatedRoute
     }
   }
 }
 
-interface AuthenticatedEpisodesRouteChildren {
-  AuthenticatedEpisodesEpisodeIdRoute: typeof AuthenticatedEpisodesEpisodeIdRoute
-}
-
-const AuthenticatedEpisodesRouteChildren: AuthenticatedEpisodesRouteChildren = {
-  AuthenticatedEpisodesEpisodeIdRoute: AuthenticatedEpisodesEpisodeIdRoute,
-}
-
-const AuthenticatedEpisodesRouteWithChildren =
-  AuthenticatedEpisodesRoute._addFileChildren(
-    AuthenticatedEpisodesRouteChildren,
-  )
-
 interface AuthenticatedRouteChildren {
   AuthenticatedAnalysisRoute: typeof AuthenticatedAnalysisRoute
-  AuthenticatedEpisodesRoute: typeof AuthenticatedEpisodesRouteWithChildren
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedEpisodesEpisodeIdRoute: typeof AuthenticatedEpisodesEpisodeIdRoute
+  AuthenticatedEpisodesIndexRoute: typeof AuthenticatedEpisodesIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAnalysisRoute: AuthenticatedAnalysisRoute,
-  AuthenticatedEpisodesRoute: AuthenticatedEpisodesRouteWithChildren,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedEpisodesEpisodeIdRoute: AuthenticatedEpisodesEpisodeIdRoute,
+  AuthenticatedEpisodesIndexRoute: AuthenticatedEpisodesIndexRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
