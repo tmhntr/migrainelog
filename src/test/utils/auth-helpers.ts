@@ -73,21 +73,20 @@ export async function signIn(page: Page, user: TestUser) {
  * Sign out the current user
  */
 export async function signOut(page: Page) {
-  // Look for sign out button in header/navigation
-  const signOutButton = page.getByRole('button', { name: /sign out|logout/i });
+  // Open the menu (hamburger on mobile, menu icon on desktop)
+  const menuButton = page.getByRole('button', { name: /toggle menu/i }).or(page.getByLabel(/toggle menu/i));
+  await menuButton.click();
 
-  if (await signOutButton.isVisible()) {
-    await signOutButton.click();
-  } else {
-    // Try alternative selectors
-    await page.getByText(/sign out|logout/i).click();
-  }
+  // Wait for menu to open and click logout (use only menuitem role)
+  const logoutButton = page.getByRole('menuitem', { name: /log out/i });
+  await expect(logoutButton).toBeVisible({ timeout: 5000 });
+  await logoutButton.click();
 
-  // Wait for redirect to login page
-  await page.waitForURL('/login', { timeout: 5000 });
+  // Wait for redirect to about page (changed from login)
+  await page.waitForURL('/about', { timeout: 5000 });
 
-  // Verify we're on the login page
-  await expect(page.getByRole('heading', { name: 'Migraine Log' })).toBeVisible();
+  // Verify we're on the about page
+  await expect(page.getByRole('heading', { name: /migraine log/i })).toBeVisible();
 }
 
 /**
@@ -104,12 +103,12 @@ export async function isAuthenticated(page: Page): Promise<boolean> {
 }
 
 /**
- * Attempt to access a protected route and verify redirect to login
+ * Attempt to access a protected route and verify redirect to about page
  */
 export async function verifyProtectedRoute(page: Page, route: string) {
   await page.goto(route);
 
-  // Should redirect to login page
-  await page.waitForURL('/login', { timeout: 5000 });
-  await expect(page.getByRole('heading', { name: 'Migraine Log' })).toBeVisible();
+  // Should redirect to about page (changed from login)
+  await page.waitForURL('/about', { timeout: 5000 });
+  await expect(page.getByRole('heading', { name: /migraine log/i })).toBeVisible();
 }

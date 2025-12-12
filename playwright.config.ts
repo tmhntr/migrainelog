@@ -7,7 +7,7 @@ import { defineConfig, devices } from "@playwright/test";
  */
 export default defineConfig({
   // Test directory
-  testDir: "./tests",
+  testDir: "./src/test",
 
   // Maximum time one test can run for
   timeout: 30 * 1000,

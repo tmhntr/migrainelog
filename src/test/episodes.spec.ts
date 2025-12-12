@@ -224,16 +224,15 @@ test.describe("Episodes", () => {
     // Look for delete button
     const deleteButton = page.getByRole("button", { name: /delete/i });
     await expect(deleteButton).toBeVisible({ timeout: 5000 });
+
+    // Setup dialog handler for browser confirm dialog
+    page.once('dialog', async dialog => {
+      expect(dialog.type()).toBe('confirm');
+      expect(dialog.message()).toContain('delete');
+      await dialog.accept();
+    });
+
     await deleteButton.click();
-
-    // Verify confirmation dialog appears
-    await expect(page.getByRole("dialog")).toBeVisible();
-
-    // Look for confirmation in the dialog
-    const confirmButton = page
-      .getByRole("button", { name: /delete|confirm/i })
-      .last();
-    await confirmButton.click();
 
     // Wait for redirect back to episodes list
     await page.waitForURL("/episodes", { timeout: 10000 });
@@ -257,18 +256,24 @@ test.describe("Episodes", () => {
     // Look for delete button
     const deleteButton = page.getByRole("button", { name: /delete/i });
     await expect(deleteButton).toBeVisible({ timeout: 5000 });
+
+    // Setup dialog handler for browser confirm dialog and dismiss it
+    page.once('dialog', async dialog => {
+      expect(dialog.type()).toBe('confirm');
+      await dialog.dismiss();
+    });
+
     await deleteButton.click();
 
-    // Verify confirmation dialog appears
-    await expect(page.getByRole("dialog")).toBeVisible();
-
-    // Click cancel
-    const cancelButton = page.getByRole("button", { name: /cancel/i });
-    await cancelButton.click();
+    // Wait a bit to ensure no redirect happens
+    await page.waitForTimeout(1000);
 
     // Verify we're still on the detail page
     expect(page.url()).toContain("/episodes/");
     expect(page.url()).not.toBe("/episodes");
+
+    // Verify episode details are still visible
+    await expect(page.getByText(`${minimalEpisode.severity}/10`)).toBeVisible();
   });
 
   test("should add and remove medications dynamically", async ({ page }) => {
@@ -323,18 +328,20 @@ test.describe("Episodes", () => {
     // Open pain location selector
     await page.getByRole("combobox").first().click();
 
-    // Select multiple locations
-    await page.getByText("Forehead").click();
-    await page.getByText("Temples").click();
-    await page.getByText("Behind Eyes").click();
+    // Select multiple locations from the dropdown
+    await page.getByRole('option', { name: 'Forehead' }).click();
+    await page.getByRole('option', { name: 'Temples' }).click();
+    await page.getByRole('option', { name: 'Behind Eyes' }).click();
 
     // Close the selector
     await page.keyboard.press("Escape");
 
-    // Verify selections are shown (should see badges or tags)
-    await expect(page.getByText("Forehead")).toBeVisible();
-    await expect(page.getByText("Temples")).toBeVisible();
-    await expect(page.getByText("Behind Eyes")).toBeVisible();
+    // Verify selections are shown as badges - use more specific selectors
+    const badges = page.locator('[data-slot="badge"]');
+    await expect(badges).toHaveCount(3);
+    await expect(badges.filter({ hasText: 'Forehead' })).toBeVisible();
+    await expect(badges.filter({ hasText: 'Temples' })).toBeVisible();
+    await expect(badges.filter({ hasText: 'Behind Eyes' })).toBeVisible();
   });
 
   test("should handle episode with end time", async ({ page }) => {

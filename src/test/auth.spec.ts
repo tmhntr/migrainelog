@@ -67,7 +67,7 @@ test.describe('Authentication', () => {
     await page.getByRole('button', { name: 'Sign Up' }).click();
 
     // Verify error message is displayed
-    await expect(page.getByText(/passwords do not match/i)).toBeVisible();
+    await expect(page.getByText(/passwords don't match/i)).toBeVisible();
 
     // Verify we're still on the signup page
     expect(page.url()).toContain('/signup');
