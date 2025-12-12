@@ -1,6 +1,6 @@
 import { supabase } from '@/lib/supabase';
 import type { Episode, EpisodeStats, PainLocation, Symptom, Trigger, Medication } from '@/types/episode';
-import type { Database } from '@/types/database';
+import type { Database, Json } from '@/types/database';
 
 /**
  * Episode Service
@@ -45,7 +45,12 @@ class EpisodeService {
       pain_location: episode.pain_location,
       symptoms: episode.symptoms,
       triggers: episode.triggers,
-      medications: episode.medications.map(m => JSON.stringify(m)),
+      medications: episode.medications.map(m => ({
+        name: m.name,
+        dosage: m.dosage,
+        time_taken: m.time_taken.toISOString(),
+        effectiveness: m.effectiveness,
+      })) as unknown as Json,
       notes: episode.notes ?? null,
     };
 
@@ -70,7 +75,14 @@ class EpisodeService {
     if (updates.pain_location) updateData.pain_location = updates.pain_location;
     if (updates.symptoms) updateData.symptoms = updates.symptoms;
     if (updates.triggers) updateData.triggers = updates.triggers;
-    if (updates.medications) updateData.medications = updates.medications.map(m => JSON.stringify(m));
+    if (updates.medications) {
+      updateData.medications = updates.medications.map(m => ({
+        name: m.name,
+        dosage: m.dosage,
+        time_taken: m.time_taken.toISOString(),
+        effectiveness: m.effectiveness,
+      })) as unknown as Json;
+    }
     if (updates.notes !== undefined) updateData.notes = updates.notes;
 
     updateData.updated_at = new Date().toISOString();

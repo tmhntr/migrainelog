@@ -14,6 +14,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedAnalysisRouteImport } from './routes/_authenticated/analysis'
 import { Route as AuthenticatedEpisodesIndexRouteImport } from './routes/_authenticated/episodes/index'
 import { Route as AuthenticatedEpisodesEpisodeIdRouteImport } from './routes/_authenticated/episodes/$episodeId'
@@ -42,6 +43,11 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedAnalysisRoute = AuthenticatedAnalysisRouteImport.update({
   id: '/analysis',
   path: '/analysis',
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/analysis': typeof AuthenticatedAnalysisRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/': typeof AuthenticatedIndexRoute
   '/episodes/$episodeId': typeof AuthenticatedEpisodesEpisodeIdRoute
   '/episodes': typeof AuthenticatedEpisodesIndexRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/analysis': typeof AuthenticatedAnalysisRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/': typeof AuthenticatedIndexRoute
   '/episodes/$episodeId': typeof AuthenticatedEpisodesEpisodeIdRoute
   '/episodes': typeof AuthenticatedEpisodesIndexRoute
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/_authenticated/analysis': typeof AuthenticatedAnalysisRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/episodes/$episodeId': typeof AuthenticatedEpisodesEpisodeIdRoute
   '/_authenticated/episodes/': typeof AuthenticatedEpisodesIndexRoute
@@ -96,6 +105,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/analysis'
+    | '/settings'
     | '/'
     | '/episodes/$episodeId'
     | '/episodes'
@@ -105,6 +115,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/analysis'
+    | '/settings'
     | '/'
     | '/episodes/$episodeId'
     | '/episodes'
@@ -115,6 +126,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/_authenticated/analysis'
+    | '/_authenticated/settings'
     | '/_authenticated/'
     | '/_authenticated/episodes/$episodeId'
     | '/_authenticated/episodes/'
@@ -164,6 +176,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/analysis': {
       id: '/_authenticated/analysis'
       path: '/analysis'
@@ -190,6 +209,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteChildren {
   AuthenticatedAnalysisRoute: typeof AuthenticatedAnalysisRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedEpisodesEpisodeIdRoute: typeof AuthenticatedEpisodesEpisodeIdRoute
   AuthenticatedEpisodesIndexRoute: typeof AuthenticatedEpisodesIndexRoute
@@ -197,6 +217,7 @@ interface AuthenticatedRouteChildren {
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAnalysisRoute: AuthenticatedAnalysisRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedEpisodesEpisodeIdRoute: AuthenticatedEpisodesEpisodeIdRoute,
   AuthenticatedEpisodesIndexRoute: AuthenticatedEpisodesIndexRoute,

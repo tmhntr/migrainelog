@@ -133,11 +133,13 @@ export const EpisodeForm = ({ episodeId, initialData, onSuccess }: EpisodeFormPr
         const validatedData = episodeSchema.parse(value);
 
         // Convert medication time_taken strings to Date objects
+        // Note: contributing_factors is excluded as it's not in the database schema yet
+        const { contributing_factors, ...dataToSave } = validatedData;
         const episodeData = {
-          ...validatedData,
-          start_time: new Date(validatedData.start_time),
-          end_time: validatedData.end_time ? new Date(validatedData.end_time) : undefined,
-          medications: validatedData.medications.map(med => ({
+          ...dataToSave,
+          start_time: new Date(dataToSave.start_time),
+          end_time: dataToSave.end_time ? new Date(dataToSave.end_time) : undefined,
+          medications: dataToSave.medications.map(med => ({
             ...med,
             time_taken: new Date(med.time_taken),
           })),
