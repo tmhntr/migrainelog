@@ -4,8 +4,11 @@
  * Type-safe helper functions for working with the Supabase database
  */
 
-import type { EpisodeInsert, EpisodeUpdate } from '@/types/database';
+import type { TablesInsert, TablesUpdate } from '@/types/database';
 import type { Medication } from '@/types/episode';
+
+type EpisodeInsert = TablesInsert<'episodes'>;
+type EpisodeUpdate = TablesUpdate<'episodes'>;
 
 /**
  * Converts a Medication object to the JSONB format expected by the database

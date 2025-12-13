@@ -87,3 +87,15 @@ export const signUpSchema = z.object({
   message: "Passwords don't match",
   path: ['confirmPassword'],
 });
+
+const feedbackTypeEnum = z.enum(['feedback', 'feature_request']);
+
+export const feedbackSchema = z.object({
+  type: feedbackTypeEnum.default('feedback'),
+  title: z.string()
+    .min(3, 'Title must be at least 3 characters')
+    .max(200, 'Title must be less than 200 characters'),
+  description: z.string()
+    .min(10, 'Description must be at least 10 characters')
+    .max(5000, 'Description must be less than 5000 characters'),
+});

@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Menu, Brain, Home, FileText, TrendingUp, Settings, Info, LogOut } from "lucide-react";
 import { useState } from "react";
+import { FeedbackDialog } from "@/components/feedback/FeedbackDialog";
 
 /**
  * Header Component
@@ -52,6 +53,11 @@ export const Header = () => {
             <Brain className="h-5 w-5 sm:h-6 sm:w-6" />
             Migraine Log
           </Link>
+
+          {/* Feedback Button (always visible when logged in) */}
+          <div className="flex-1 flex justify-end mr-2">
+            {user && <FeedbackDialog />}
+          </div>
 
           {/* Desktop Menu - Dropdown */}
           <div className="hidden md:block">

@@ -245,5 +245,28 @@ src/components/
 - Can use Supabase CLI for local development
 - Migrations are idempotent (safe to re-run)
 
-## GitHub Pages Deployment
-The `vite.config.ts` includes conditional base path for GitHub Pages deployment. Set `GITHUB_PAGES=true` environment variable when deploying to GitHub Pages.
+## Vercel Deployment with Supabase Migrations
+
+The application is configured for deployment to Vercel with automatic Supabase database migrations.
+
+### Deployment Process
+1. **Push to `main`** triggers production deployment
+2. **Pull Requests** trigger preview deployments
+3. **Migrations run first** - If migrations fail, deployment is blocked
+4. **Zero downtime** - Failed migrations don't affect current deployment
+
+### Configuration Files
+- `vercel.json` - Vercel project configuration
+- `.github/workflows/vercel-deploy.yml` - Deployment workflow
+- `scripts/run-migrations.js` - Migration runner script
+
+### Required GitHub Secrets
+- `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`
+- `SUPABASE_ACCESS_TOKEN`, `SUPABASE_PROJECT_REF`, `SUPABASE_DB_PASSWORD`
+- `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`
+
+### Required Vercel Environment Variables
+- `VITE_SUPABASE_URL` - Supabase project URL
+- `VITE_SUPABASE_ANON_KEY` - Supabase anonymous key
+
+See `CI_CD.md` for detailed setup instructions.

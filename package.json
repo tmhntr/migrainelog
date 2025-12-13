@@ -20,7 +20,9 @@
     "test:e2e:chromium": "playwright test --project=chromium",
     "test:e2e:firefox": "playwright test --project=firefox",
     "test:e2e:webkit": "playwright test --project=webkit",
-    "test:e2e:report": "playwright show-report"
+    "test:e2e:report": "playwright show-report",
+    "migrate": "node scripts/run-migrations.js",
+    "migrate:local": "supabase db push"
   },
   "keywords": [],
   "author": "",

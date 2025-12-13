@@ -19,7 +19,7 @@ The CI/CD pipeline is built using **GitHub Actions** and consists of three main 
 
 1. **Unit & Integration Tests** - Fast feedback on code quality
 2. **E2E Tests** - Comprehensive browser testing
-3. **Deployment** - Automated deployment to GitHub Pages
+3. **Vercel Deployment with Supabase Migrations** - Automated deployment with database migrations
 
 ### Workflow Triggers
 
@@ -27,7 +27,7 @@ The CI/CD pipeline is built using **GitHub Actions** and consists of three main 
 |----------|---------|----------|
 | Unit Tests | Push, PR | `main`, `develop`, `claude/**` |
 | E2E Tests | Push, PR | `main`, `develop`, `claude/**` |
-| Deployment | Push, Manual | `main` only |
+| Vercel Deployment | Push, PR, Manual | `main` (production), PRs (preview) |
 
 ---
 
@@ -79,28 +79,34 @@ The CI/CD pipeline is built using **GitHub Actions** and consists of three main 
 - Test screenshots and videos (on failure)
 - Test results JSON
 
-### 3. Deployment (`.github/workflows/deploy.yml`)
+### 3. Vercel Deployment with Supabase Migrations (`.github/workflows/vercel-deploy.yml`)
 
-**Purpose**: Build and deploy the application to GitHub Pages
+**Purpose**: Run database migrations and deploy the application to Vercel
 
 **Features**:
-- 🏗️ Production build with environment variables
-- 🔐 Secure deployment with GitHub tokens
-- 🌐 Hosted on GitHub Pages
-- ⚡ npm caching for faster builds
+- 🗄️ **Automatic database migrations** - Migrations run BEFORE deployment
+- 🏗️ Production and preview deployments
+- 🔐 Secure deployment with environment variables
+- 🌐 Hosted on Vercel with automatic HTTPS
+- ⚡ npm and Supabase CLI caching
 
 **Steps**:
 1. ✅ Checkout code
 2. 📦 Setup Node.js 20 with npm caching
 3. 📥 Install dependencies (`npm ci`)
-4. 🏗️ Build production bundle (`npm run build`)
-5. ⚙️ Configure GitHub Pages
-6. ⬆️ Upload build artifact
-7. 🚀 Deploy to GitHub Pages
+4. 🗄️ Install Supabase CLI
+5. 🎯 Determine environment (production vs preview)
+6. **🚀 Run database migrations** (`node scripts/run-migrations.js`)
+7. ✅ Deploy to Vercel (if migrations succeed)
+8. 💬 Comment deployment URL on PRs
 
-**Runtime**: ~3-5 minutes
+**Critical Feature**: If migrations fail, deployment is blocked and the current deployment remains unchanged (zero downtime).
 
-**Deployed URL**: `https://<username>.github.io/migrainelog/`
+**Runtime**: ~4-6 minutes
+
+**Deployed URLs**:
+- Production: `https://<your-project>.vercel.app`
+- Preview: `https://<your-project>-<branch>.vercel.app`
 
 ---
 
@@ -120,16 +126,34 @@ Add the following secrets to your repository:
 2. Click **New repository secret**
 3. Add these secrets:
 
-| Secret Name | Description | Example |
-|-------------|-------------|---------|
-| `VITE_SUPABASE_URL` | Your Supabase project URL | `https://xxxxx.supabase.co` |
-| `VITE_SUPABASE_ANON_KEY` | Your Supabase anonymous key | `eyJhbGciOiJI...` |
+#### Required Secrets
 
-### 3. Enable GitHub Pages
+| Secret Name | Description | Where to Get It |
+|-------------|-------------|-----------------|
+| `VERCEL_TOKEN` | Vercel authentication token | Vercel Account Settings > Tokens |
+| `VERCEL_ORG_ID` | Vercel organization ID | Vercel Project Settings > General |
+| `VERCEL_PROJECT_ID` | Vercel project ID | Vercel Project Settings > General |
+| `SUPABASE_ACCESS_TOKEN` | Supabase personal access token | Supabase Dashboard > Account > Access Tokens |
+| `SUPABASE_PROJECT_REF` | Production Supabase project reference | Supabase Project Settings > General |
+| `SUPABASE_DB_PASSWORD` | Database password | Supabase Project Settings > Database |
+| `VITE_SUPABASE_URL` | Supabase project URL (for tests) | Supabase Project Settings > API |
+| `VITE_SUPABASE_ANON_KEY` | Supabase anon key (for tests) | Supabase Project Settings > API |
 
-1. Go to **Settings** > **Pages**
-2. Under **Source**, select **GitHub Actions**
-3. Save changes
+#### Optional Secrets
+
+| Secret Name | Description | When Needed |
+|-------------|-------------|-------------|
+| `SUPABASE_PROJECT_REF_PREVIEW` | Preview Supabase project reference | If using separate preview database |
+
+### 3. Configure Vercel Environment Variables
+
+1. Go to Vercel Dashboard > Your Project > Settings > Environment Variables
+2. Add these variables for **Production, Preview, and Development**:
+
+| Variable Name | Value | Description |
+|---------------|-------|-------------|
+| `VITE_SUPABASE_URL` | Your Supabase project URL | Public - client access |
+| `VITE_SUPABASE_ANON_KEY` | Your Supabase anon key | Public - RLS enforced |
 
 ### 4. Branch Protection (Recommended)
 
@@ -147,37 +171,74 @@ Protect your `main` branch:
 
 ## Deployment
 
+### Automatic Deployment
+
+**Production Deployment** (Push to `main`):
+1. Code is pushed to the `main` branch
+2. GitHub Actions workflow triggers
+3. Supabase migrations run against production database
+4. If migrations succeed, app deploys to Vercel production
+5. If migrations fail, deployment is blocked (zero downtime)
+
+**Preview Deployment** (Pull Requests):
+1. Pull request is created targeting `main`
+2. GitHub Actions workflow triggers
+3. Supabase migrations run against preview database
+4. If migrations succeed, app deploys to Vercel preview environment
+5. Deployment URL is posted as a comment on the PR
+
 ### Manual Deployment
 
 Trigger a deployment manually:
 
 1. Go to **Actions** tab
-2. Select **Deploy to GitHub Pages** workflow
+2. Select **Deploy to Vercel with Supabase Migrations** workflow
 3. Click **Run workflow**
-4. Select `main` branch
+4. Select `main` branch (production) or feature branch (preview)
 5. Click **Run workflow**
 
-### Automatic Deployment
+### Deployment URLs
 
-Deployments trigger automatically when:
-- Code is pushed to the `main` branch
-- All tests pass (if branch protection is enabled)
-
-### Deployment URL
-
-Your app will be deployed to:
-
+**Production**:
 ```
-https://<your-username>.github.io/migrainelog/
+https://<your-project>.vercel.app
+```
+
+**Preview** (Pull Requests):
+```
+https://<your-project>-<branch-name>-<hash>.vercel.app
 ```
 
 ### Custom Domain (Optional)
 
-To use a custom domain:
+To use a custom domain with Vercel:
 
-1. Add a `CNAME` file to the `public/` directory with your domain
-2. Configure DNS settings with your domain provider
-3. Enable HTTPS in GitHub Pages settings
+1. Go to Vercel Project Settings > Domains
+2. Add your custom domain
+3. Configure DNS settings with your domain provider (Vercel provides instructions)
+4. Vercel automatically provisions SSL certificates
+
+### Migration Script
+
+The migration script (`scripts/run-migrations.js`) runs automatically in CI/CD:
+
+**Manual Migration** (if needed):
+```bash
+# Set environment variables
+export SUPABASE_ACCESS_TOKEN="your-token"
+export SUPABASE_PROJECT_REF="your-project-ref"
+export SUPABASE_DB_PASSWORD="your-password"
+export DEPLOYMENT_ENV="production"
+
+# Run migrations
+npm run migrate
+```
+
+**Local Migration** (development):
+```bash
+# Requires local Supabase running
+npm run migrate:local
+```
 
 ---
 
