@@ -43,26 +43,26 @@ ALTER TABLE public.feedback ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can view their own feedback"
   ON public.feedback
   FOR SELECT
-  USING (auth.uid() = user_id);
+  USING ((select auth.uid()) = user_id);
 
 -- RLS Policy: Users can insert their own feedback
 CREATE POLICY "Users can insert their own feedback"
   ON public.feedback
   FOR INSERT
-  WITH CHECK (auth.uid() = user_id);
+  WITH CHECK ((select auth.uid()) = user_id);
 
 -- RLS Policy: Users can update their own feedback (only if status is 'new')
 CREATE POLICY "Users can update their own feedback"
   ON public.feedback
   FOR UPDATE
-  USING (auth.uid() = user_id AND status = 'new')
-  WITH CHECK (auth.uid() = user_id AND status = 'new');
+  USING ((select auth.uid()) = user_id AND status = 'new')
+  WITH CHECK ((select auth.uid()) = user_id AND status = 'new');
 
 -- RLS Policy: Users can delete their own feedback (only if status is 'new')
 CREATE POLICY "Users can delete their own feedback"
   ON public.feedback
   FOR DELETE
-  USING (auth.uid() = user_id AND status = 'new');
+  USING ((select auth.uid()) = user_id AND status = 'new');
 
 -- Add helpful comments
 COMMENT ON TABLE public.feedback IS 'Stores user feedback and feature requests';
