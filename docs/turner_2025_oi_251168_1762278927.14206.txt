@@ -1,0 +1,768 @@
+
+                  Original Investigation | Neurology
+
+                  Information-Theoretic Trigger Surprisal and Future Headache Activity
+
+                  Dana P. Turner, MSPH, PhD; Twinkle Patel, MD; Emily Caplis, BS; Timothy T. Houle, PhD
+
+
+                  Abstract                                                                                                                                                      Key Points
+                                                                                                                                                                                Question Is there an association
+                  IMPORTANCE Identifying migraine triggers is a common goal for individuals with migraine but
+                                                                                                                                                                                between information-theoretic trigger
+                  remains challenging due to the vast number of possible triggers and their fluctuating nature. A
+                                                                                                                                                                                surprisal and future headache activity?
+                  measurement system quantified through information-theoretic surprisal (ie, the negative logarithm
+                  of the probability of an observed exposure) could be valuable for evaluating the wide range of                                                                Findings In this cohort study including
+                  possible triggers for future migraine attacks.                                                                                                                109 participants, total surprisal score
+                                                                                                                                                                                was associated with future migraine risk
+                  OBJECTIVE To evaluate the association between surprisal and future headache attacks.                                                                          at 12 hours and 24 hours.
+
+                                                                                                                                                                                Meaning The findings of this study
+                  DESIGN, SETTING, AND PARTICIPANTS This cohort study conducted from April 2021 to December
+                                                                                                                                                                                underscore the value of a person-
+                  2024 included 109 participants with migraine who completed diary entries of potential migraine
+                                                                                                                                                                                centered, information-theoretic
+                  triggers and migraine attacks within 12 and 24 hours after trigger exposure twice daily for up to
+                                                                                                                                                                                approach to understanding migraine
+                  28 days.
+                                                                                                                                                                                triggers, one that moves beyond static
+                                                                                                                                                                                lists of potential causes to account for
+                  EXPOSURE Diary items captured exposure to potential behavioral, emotional, and environmental
+                                                                                                                                                                                the unpredictable and context-sensitive
+                  migraine triggers. To quantify the unexpectedness of a participant’s daily experiences, total surprisal
+                                                                                                                                                                                nature of daily life.
+                  scores measured in bits of information was calculated using within-person empirical probability
+                  distributions to reflect how atypical each day’s experiences were.
+                                                                                                                                                                                   Supplemental content
+                                                                                                                                                                              +
+                  MAIN OUTCOMES AND MEASURES The primary outcomes were occurrence of a headache attack                                                                        Author affiliations and article information are
+                                                                                                                                                                              listed at the end of this article.
+                  within 12 and 24 hours (0, no attack; 1, attack) after trigger exposure. A headache attack was defined
+                  as any self-reported headache with pain greater than 0 on a 0 to 10 numeric rating scale where 0
+                  was no pain and 10 was the worst pain, and any pattern of secondary symptoms (eg, photophobia
+                  and phonophobia). Intraclass correlation coefficients and variance components were calculated to
+                  quantify between-person differences in baseline risk and the strength of the surprisal association.
+
+                  RESULTS A total of 109 participants were included in the analysis. Participants’ median age was 35
+                  (26.0-46.0) years, and the majority were female (102 [93.5%]). One hundred and four participants
+                  had complete diaries (5176 diary entries) and experienced headaches on 1518 of 5145 days (29.5%).
+                  Higher surprisal was significantly associated with increased migraine risk within 12 hours (odds ratio
+                  [OR], 1.86; 95% CI, 1.12-3.08; P = .02) and 24 hours (OR, 2.15; 95% CI, 1.44-3.20; P < .001), with a
+                  higher OR indicating a stronger association observed at the longer interval. The association between
+                  current surprisal and migraine onset was moderated by recent surprisal history and exhibited
+                  nonlinear properties at 12 hours. Random-effects models revealed substantial between-person
+                  variability and, after adjustment, the association between total surprisal and headache attack risk
+                  was attenuated (OR, 1.56; 95% CI, 1.01-2.40; P = .04 for 12 hours and OR, 1.88; 95% CI, 1.27-2.79;
+                  P = .002 for 24 hours).
+
+                  CONCLUSIONS AND RELEVANCE In this cohort study, surprisal offered a novel, individualized
+                  measure of trigger unpredictability that was associated with short-term migraine risk. Incorporating
+
+                                                                                                                                                      (continued)
+
+
+                      Open Access. This is an open access article distributed under the terms of the CC-BY License.
+
+                  JAMA Network Open. 2025;8(11):e2542944. doi:10.1001/jamanetworkopen.2025.42944                               (Reprinted)                                                                November 11, 2025           1/11
+
+
+Downloaded from jamanetwork.com by guest on 02/14/2026
+
+                     JAMA Network Open | Neurology                                                                                                                  Information-Theoretic Trigger Surprisal and Future Headache Activity
+
+                     Abstract (continued)
+
+                     surprisal into digital tools may improve personalized prevention strategies, moving beyond static
+                     trigger lists to a dynamic, context-aware model of migraine self-management.
+
+                     JAMA Network Open. 2025;8(11):e2542944. doi:10.1001/jamanetworkopen.2025.42944
+
+
+                     Introduction
+
+                                                                                                                                                                             1-3
+                     To mitigate the burden of migraine, individuals often strive to identify triggers of their attacks.                                                          In
+                     practice, this process relies on biopsychosocial covariation assessment, in which fluctuations of a
+                                                                                                                                                                4-9
+                     suspected trigger are examined with variations in the pattern of migraine occurrence.                                                           However,
+                                                                                                                                                  10,11
+                     this task is difficult, particularly when the number of potential triggers is vast.                                                Hundreds of factors
+                     have been proposed as migraine triggers, ranging from dietary and environmental factors to
+                     physiological and psychological stressors, making it nearly impossible for individuals to isolate any
+                                                                 2,3,6
+                     single cause with certainty.
+                             While well-controlled experimental designs could help clarify these associations, they are
+                     difficult to implement in everyday life. Instead, people often rely on natural experiments in which
+                     both potential causes and migraine outcomes vary freely, making it challenging to determine causal
+                                          8,11,12
+                     associations .                Without a systematic approach, this reliance on observational assessment may
+                                                                                                                               13
+                     lead to inaccurate conclusions that may not be scientifically valid.
+                             A robust measurement system capable of evaluating the wide range of possible triggers could
+                                                               7
+                     provide substantial value.                  Such a system would need to accurately quantify the variability in an
+                     individual’s exposure to different migraine triggers over time and demonstrate a reliable association
+                     between these exposures and the likelihood of near-future migraine attacks. Such a comprehensive
+                     measurement framework could improve identification of factors associated with migraine risk and
+                     empower individuals with more effective strategies for prevention and management.
+                             We have proposed that headache triggers could be understood not only through their unique
+                                                                                                                                                                    14
+                     physiological mechanisms but also by the degree of surprise they present to individuals.                                                           Using
+                     information theory, this work demonstrated that rare or unexpected values of common triggers, such
+                     as caffeine and alcohol consumption, stress, and mood disturbances, were consistently associated
+                                                                           15,16
+                     with increased headache activity.                           Summing these individual surprisals into a total trigger surprise
+                     score provided stronger discrimination between headache and nonheadache days than any trigger
+                               14
+                     alone.       More recent research has focused on developing a comprehensive migraine trigger
+                     measurement system using surprisal and entropy measures, revealing substantial heterogeneity in
+                                                                                 17
+                     exposure patterns within individuals.                           A small number of principal components explained most of
+                     this variability, suggesting that migraine trigger exposure may be effectively characterized along a
+                     few key dimensions. Together, these findings highlight surprisal as a valuable metric for quantifying
+                     the unpredictability of trigger exposures and improving headache forecasting.
+                             The present study aims to further examine the association between trigger surprisal and future
+                     migraine attacks. We hypothesized that the original association observed between surprisal and
+                                                 14                                                                                     17
+                     headache activity               could be replicated in prospectively collected data.                                  We also describe the
+                     application of this migraine trigger measurement system by examining the associations of
+                     fluctuations in surprisal measurements and near-future migraine activity.
+
+
+                     Methods
+
+                     This cohort study was approved by the institutional review board of Mass General Brigham. This
+                     study is the second preplanned primary analysis of these data. The study was conducted from April
+                     2021 to December 2024 and is reported according to the Strengthening the Reporting of
+                                                                                                                                      18
+                     Observational Studies in Epidemiology (STROBE) reporting guideline.                                                 Participants were recruited
+
+
+                         JAMA Network Open. 2025;8(11):e2542944. doi:10.1001/jamanetworkopen.2025.42944                                            (Reprinted)                                                                    November 11, 2025               2/11
+
+
+Downloaded from jamanetwork.com by guest on 02/14/2026
+
+                    JAMA Network Open | Neurology                                                                                                                Information-Theoretic Trigger Surprisal and Future Headache Activity
+
+                    through an institutional online recruitment platform, public transportation locations, and flyers.
+                    Interested individuals underwent telephone screening to determine eligibility. The inclusion criteria
+                                                                                                                                               19
+                    were having an International Classification of Headache Disorders, 3rd Edition                                                diagnosis of migraine
+                    with or without aura, experiencing 4 to 14 headache days per month, and being 18 to 65 years of
+                    age. Exclusion criteria included secondary headache disorder, chronic daily or medication overuse
+                    headache, recent change in headache symptoms, and pregnancy.
+                             Eligible participants were invited for an in-person or virtual enrollment session. Before
+                    participation, individuals completed an electronic informed consent process in Research Electronic
+                                                                                               20
+                    Data Capture (REDCap; Vanderbilt University).                                  They completed enrollment questionnaires in
+                    REDCap (eg, demographic and headache information, Migraine Disability Assessment [score range:
+                                                                                                           21
+                    0-270, with higher scores indicating greater disability).                                 Demographic information included age, sex,
+                    and self-reported race and ethnicity, which included the following categories: American Indian or
+                    Alaska Native, Asian, Black, Hispanic, and White. Data on race and ethnicity were included in the
+                    analysis as part of standard National Institutes of Health reporting.
+                             Participants received instructions for at-home procedures, which involved twice-daily diary
+                    entries, 1 morning and 1 evening, for 28 days. The diaries, completed in REDCap, required
+                    approximately 5 to 10 minutes. On completion of study procedures, participants took part in a final
+                    session and completed another series of questionnaires similar to those in the enrollment session.
+                    Additional questionnaires were completed at study enrollment and completion but are not
+                    reported here.
+
+                    Daily Diary Items
+                    The electronic diaries captured exposure to a wide range of potential migraine triggers, headache
+                                                                                                                                                                             17
+                    activity, and medication use. The individual items and their variability were described previously.
+                    Given the nature of different trigger constructs, distinct sets of triggers were assessed in the morning
+                    (AM) and evening (PM). The AM diary focused on sleep-related behaviors, including duration, quality,
+                    awakenings, bedtime, and wake time. It also included questions about late-night meals, weather
+                    influences, and mood state assessed with the Profile of Mood States Short Form, which measures 6
+                    mood states (tension-anxiety, depression-dejection, anger-hostility, vigor-activity, fatigue-inertia,
+                                                                                                            22
+                    and confusion-bewilderment) using a Likert-type scale.                                      The PM diary similarly assessed mood state
+                    with the Profile of Mood States Short Form but also captured data on commonly reported food and
+                    drink triggers, environmental exposures, meal patterns or missed meals, and weather influences.
+                    Additionally, the PM diary included measures of daily stressors from the Daily Stress Inventory, which
+                                                                                                                                        23
+                    measures exposure to 58 common daily hassles using a Likert-type scale.
+
+                    Migraine Trigger Risk Scoring System
+                    To quantify the unexpectedness of an individual’s daily response pattern, we applied the concept of
+                                                                          14,16
+                    surprisal from information theory.                           Surprisal is defined as the negative logarithm of the probability
+                    of an observed exposure (−log                     [p             ]) and reflects how unlikely that outcome is under a
+                                                                     2    exposure
+                    specified probability distribution. Empirical probability distributions were constructed for each
+                    individual using their observed responses. For each diary period, the surprisal scores (bits) of the
+                    individual diary items were computed based on these person-specific distributions. The total
+                    surprisal score was then calculated as the sum of item-level surprisal scores for that day and scaled by
+                    the number of items to yield a mean surprisal score per item, expressed in bits of information. This
+                    scaling allows for missing items to be ignored and for AM diaries to be scaled similar to PM diaries,
+                                                                                                                                  17
+                    despite the latter having more items as described by Turner DP et al.                                            This approach provides a
+                    within-person measure of how atypical a given day’s responses are relative to that individual’s
+                    behavioral patterns.
+                                                              17
+                             In our previous work,                the calculation of total surprisal incorporated 2 components: surprisal
+                    based on the magnitude of each measurement and surprisal associated with the change from the
+                    preceding value. This required estimating and summing surprisal values from 2 within-person
+
+                         JAMA Network Open. 2025;8(11):e2542944. doi:10.1001/jamanetworkopen.2025.42944                                         (Reprinted)                                                                   November 11, 2025              3/11
+
+
+Downloaded from jamanetwork.com by guest on 02/14/2026
+
+                    JAMA Network Open | Neurology                                                                                                                Information-Theoretic Trigger Surprisal and Future Headache Activity
+
+                    empirical distributions: the distribution of observed values and the distribution of within-person
+                    changes (ie, X          −  X      , where X        represents the trigger exposure today and X                               represents the trigger
+                                          t       t −1               t                                                                       t-1
+                    exposure at the previous diary entry) for each variable. In the current analysis, we simplify this
+                    approach by omitting the change-based component of surprisal. Instead, we include a lagged total
+                    surprisal term (Surprisal                 ) in the statistical models to account for short-term fluctuations in surprisal
+                                                          t −1
+                    over time.
+
+                    Outcomes
+                    The primary outcomes for this analysis are 2 binary variables indicating the occurrence of a headache
+                    attack within a specified future time window. Specifically, we define a dichotomous outcome (0, no
+                    attack; 1, attack) representing whether a headache attack occurs within the subsequent 12 and 24
+                    hours. An attack was defined as any self-reported headache with pain greater than 0 on the numeric
+                    rating scale where 0 is no pain and 10 is the worst pain, and any pattern of secondary symptoms (eg,
+                    photophobia, phonophobia). These outcomes were aligned to each diary entry time point (eg, 12
+                    hours from the AM entry) and allowed us to evaluate short-term prospective associations between
+                    daily surprisal and the onset of headache attacks over 2 clinically relevant temporal horizons.
+
+                    Statistical Analyses
+                    The originally planned sample size of 200 provided a 95% CI precision of 4.16% for an observed
+                    proportion of 10%. However, the COVID-19 pandemic limited participant enrollment to 109, resulting
+                    in a broader estimated 95% CI precision of 5.70%, which was deemed sufficient for evaluating the
+                    study objectives. All statistical analyses were conducted using R, version 4.4.1 (R Project for Statistical
+                    Computing) and RStudio (Posit PBC). Mean (SD) or median (IQR) was used to describe continuous
+                    variables, while frequencies (%) were used for categorical variables. To examine the association
+                    between daily surprisal scores and the likelihood of subsequent migraine attacks, generalized linear
+                    mixed-effects models were used. These models accounted for repeated diary entries within
+                    individuals by including a random intercept for each participant. In the primary analyses, the fixed
+                    effects included the total surprisal score at AM or PM, with random slopes for surprisal to capture
+                    interindividual variability in the surprisal-headache association. Models were estimated separately
+                    for the 2 binary outcomes using a binomial likelihood and logit link. Temporal dependencies were
+                    modeled by including the lagged headache outcome from the previous diary entry. We also tested for
+                    nonlinear and interaction effects by including a squared term for current surprisal and its interaction
+                    with the lagged surprisal score. Model assumptions were verified through residual diagnostics. There
+                    were 710 of 5886 (12.1%) missing diary entries, resulting in an adherence rate of 88%. Missing data
+                    were ignored for analysis, with all models conducted on complete cases. A 2-tailed P < .05 was
+                    considered statistically significant for all hypothesis tests. Intraclass correlation coefficients and
+                    variance components were calculated to quantify between-person differences in baseline risk and
+                    the strength of the surprisal association. In sensitivity analyses, models were adjusted for each
+                    participant’s mean surprisal score to better isolate within-person effects.
+
+
+                    Results
+
+                    The study enrolled 109 participants with a median (IQR) age of 35 (26-46) years; 102 were female
+                    (93.5%) and 7 were male (6.5%). Participants self-reported race as follows: 3 were American Indian
+                    or Alaska Native (2.8%), 9 were Asian (8.3%), 6 were Black (5.5%), and 91 were White (83.5%)
+                    individuals; 11 individuals (10.2%) reported Hispanic ethnicity. Fifty-nine participants (54.6%) were
+                    single, 44 (40.7%) were married, 2 (1.9) were widowed, and 3 (2.8) were divorced or separated. Of
+                    the 109 individuals enrolled, 104 completed twice-daily electronic entries for approximately 28 days,
+                    yielding 5176 total diaries. All participants had migraine, with a median (IQR) headache frequency of
+                    8 (5-12) days per month and a median intensity of 7 of 10 (6-8), with intensity measured using a
+
+
+                         JAMA Network Open. 2025;8(11):e2542944. doi:10.1001/jamanetworkopen.2025.42944                                         (Reprinted)                                                                   November 11, 2025              4/11
+
+
+Downloaded from jamanetwork.com by guest on 02/14/2026
+
+                        JAMA Network Open | Neurology                                                                                                                                         Information-Theoretic Trigger Surprisal and Future Headache Activity
+
+                        numeric rating scale of 0 to 10, with higher scores representing higher intensity. The median (IQR)
+
+                        Migraine Disability Assessment score of 24 (13-36) indicated moderate to severe disability.
+
+
+                        Distribution of Surprisal Scores
+                        Table 1 presents the pooled distribution of surprisal scores for all participant days. Higher surprisal
+
+                        scores were observed in the presence of a current headache (range, 0.06-0.10 bits) and when a
+
+                        future headache would develop (range, 0.01-0.06 bits). The highest mean surprisal scores were
+
+                        identified from the PM diary entries. These differences indicate that when pooled across individuals,
+
+                        the surprisal scores allowed modest discrimination across headache days.
+
+
+                        Association of Total Surprisal Score and Future Headache Activity
+                        Participants experienced a headache on 1518 of 5145 days (29.5%) with complete diary information.
+
+                        The total surprisal score was associated with both 12-hour and 24-hour headache attack risk, with
+
+                        odds ratios (ORs) of 1.86 (95% CI, 1.12-3.08; P = .02) and 2.15 (95% CI, 1.44-3.20; P < .001),
+
+                        respectively. This means that for each bit increase in surprisal, the odds of a future headache
+
+                        increased by 86% and 115%, with increasing odds at 24 hours compared with 12 hours. The random
+
+                        variance components indicate substantial between-person variability in how surprisal influences
+
+                        headache risk. Specifically, the random slope variance (τ                                                   ) for surprisal was 2.00 at 12 hours but was
+                                                                                                                                 11
+                        0.31 for 24 hours (Table 2 and Figure 1). The negative correlation between random intercept and
+
+                        surprisal slope (ρ                   = −0.81 for 12 hours; ρ                       = −0.50 for 24 hours) further implies that individuals
+                                                        01                                            01
+
+
+                                                                                                                    a
+                        Table 1. Daily Characteristics of Scaled Surprisal Scores
+
+                                                                       Future headache at 12 h                                                     Future headache at 24 h
+                          Current headache                             No                                     Yes                                  No                                     Yes
+                          AM diary
+                          No                                           0.53 (0.18)                            0.56 (0.19)                          0.53 (0.18)                            0.55 (0.18)
+                          Yes                                          0.61 (0.21)                            0.62 (0.19)                          0.61 (0.22)                            0.62 (0.18)
+                          PM diary
+                          No                                           0.62 (0.24)                            0.64 (0.24)                          0.60 (0.23)                            0.65 (0.25)
+                                                                                                                                                                                                                            a
+                                                                                                                                                                                                                               Values presented are mean (SD) surprisal scores (bits
+                          Yes                                          0.70 (0.26)                            0.74 (0.24)                          0.67 (0.25)                            0.73 (0.25)
+                                                                                                                                                                                                                               of information).
+
+
+                                                                                                                                                   a
+                        Table 2. Association of Surprisal Total Score and Future Headache Attack
+
+                                                                                            Future headache at 12 h                                     Future headache at 24 h
+                                                                                            OR (95% CI)                            P value              OR (95% CI)                              P value
+                          Factors
+                             Intercept                                                      0.68 (0.49-0.96)                       .027                 0.53 (0.39-0.71)                         <.001
+                             Current headache
+                                 No                                                         1 [Reference]                          NA                   1 [Reference]                            NA
+                                 Yes                                                        1.88 (1.61-2.20)                       <.001                1.64 (1.43-1.89)                         <.001
+                             Diary type
+                                 AM                                                         1 [Reference]                          NA                   1 [Reference]                            NA
+                                 PM                                                         0.47 (0.41-0.55)                       <.001                0.82 (0.72-0.93)                         .002
+                             Surprisal                                                      1.86 (1.12-3.08)                       .02                  2.15 (1.44-3.20)                         <.001
+                                                b
+                          Random effect
+                                                                                                                                                                                                                            Abbreviations: ICC, intraclass correlation coefficient;
+                               2
+                             σ                                                              3.29                                   NA                   3.29                                     NA                         NA, not applicable; OR, odds ratio.
+                                                                                                                                                                                                                            a
+                             τ00                                                            0.81                                   NA                   0.54                                     NA                            Each model is conducted based on the available
+                             τ                                                              2.00                                   NA                   0.31                                     NA                            sample size, which may differ across models due to
+                               11
+                                                                                                                                                                                                                               missing data in either the outcome period (12 vs 24
+                             ρ01                                                            −0.81                                  NA                   −0.50                                    NA
+                                                                                                                                                                                                                               hours) or any lagged terms.
+                             ICC                                                            0.11                                   NA                   0.11                                     NA
+                                                                                                                                                                                                                            b                                 2
+                                                                                                                                                                                                                               The random effect σ               represents total variance; τ                 ,
+                             No.                                                            103                                    NA                   104                                      NA                                                                                                        00
+                                                                                                                                                                                                                               variance component of intercept; τ                      , variance
+                                                                                                                                                                                                                                                                                     11
+                             Observations                                                   4530                                   NA                   4947                                     NA
+                                                                                                                                                                                                                               component of slope; ρ                 , correlation between
+                                              2                       2                                                                                                                                                                                           01
+                             Marginal R         /conditional R                              0.054/0.157                            NA                   0.024/0.136                              NA
+                                                                                                                                                                                                                               intercept and slope.
+
+                             JAMA Network Open. 2025;8(11):e2542944. doi:10.1001/jamanetworkopen.2025.42944                                                               (Reprinted)                                                                                 November 11, 2025                    5/11
+
+
+
+Downloaded from jamanetwork.com by guest on 02/14/2026
+
+                     JAMA Network Open | Neurology                                                                                                                  Information-Theoretic Trigger Surprisal and Future Headache Activity
+
+                     with higher baseline headache risk exhibited a weaker association between surprisal and headache
+                     attack likelihood. The intraclass correlation coefficient of 0.11 for both models indicated that 11% of
+                     the total variance was attributable to individual differences.
+                             In the sensitivity model, each individual’s mean surprisal score was further adjusted to better
+                     consider between-person variation. In these models, the association between total surprisal and
+                     attack risk was somewhat attenuated for 12 hours (OR, 1.56; 95% CI, 1.01-2.40; P = .04) and 24 hours
+                     (OR, 1.88; 95% CI, 1.27-2.79; P = .002). Overall, these results highlight surprisal as a key risk factor
+                     for headache onset, with individual differences potentially playing a critical role in shaping this
+                     association over time.
+
+                     Nonlinear and Contextual Associations of Total Surprisal Score and Future
+                     Headache Activity
+                     At 12 hours, there was a significant interaction between the current surprisal score and its lagged
+                     value, along with evidence supporting a nonlinear (quadratic) association. The best-fitting model
+                     included both linear and squared surprisal terms, the lagged surprisal term, and their interactions.
+                     Higher current surprisal was associated with an increased probability of a headache within 12 hours,
+                     but this probability varied depending on prior surprisal (Figure 2 and Table 3). When prior surprisal
+                     was low (lag = 0.35), the interaction of current surprisal was positive and nonlinear (ie,
+                     Surprisal × Surprisal               interaction), with headache probability increasing steeply with higher
+                                                     t-1
+                     surprisal. In contrast, at higher lag values (lag = 0.9), the association flattened or even reversed
+
+                     Figure 1. Probability of Future Headache Attack as a Function of Current Surprisal Score
+                                 A    Probability at 12 h                                                                                         B   Probability at 24 h
+                                     100                                                                                                             100
+
+                                       80                                                                                                              80
+
+                                       60                                                                                                              60
+
+                                       40                                                                                                              40
+
+                                       20                                                                                                              20
+
+                                        0                                                                                                               0
+                                          0                 0.5                1.0                1.5               2.0                2.5                 0                0.5                1.0                1.5               2.0                2.5
+                                                                                 Surprisal score                                                                                                 Surprisal score
+
+                                  C   Distribution at 12 h                                                                                       D    Distribution at 24 h
+                                      0.5                                                                                                             2.5
+
+                                      0.4                                                                                                             2.0
+
+                                      0.3                                                                                                             1.5
+
+                                      0.2                                                                                                             1.0
+
+                                      0.1                                                                                                             0.5
+
+                                        0                                                                                                               0
+                                          –3              –2             –1              0               1               2              3                 –3              –2             –1              0               1               2              3
+                                                                    Individual participant slopes (logit)                                                                           Individual participant slopes (logit)
+
+                     A and B, Association between current surprisal score and the probability of near-future headache attack. C and D, The distributions of individual surprisal slopes from the mixed-
+                     effects models on the logit scale highlight variability in person-level associations. The dashed lines denote zero slope. Shaded areas represent 95% CIs.
+
+                         JAMA Network Open. 2025;8(11):e2542944. doi:10.1001/jamanetworkopen.2025.42944                                            (Reprinted)                                                                    November 11, 2025               6/11
+
+Downloaded from jamanetwork.com by guest on 02/14/2026
+
+                         JAMA Network Open | Neurology                                                                                                                                            Information-Theoretic Trigger Surprisal and Future Headache Activity
+
+
+                         direction (ie, increasing surprisal became associated with decreased headache attack likelihood,
+                                         2
+                         Surprisal          × Surprisal              interaction). The interaction between the current surprisal squared and its
+                                                                 t-1
+
+                         lagged value was statistically significant (OR, 0.02; 95% CI, 0.00-0.43; P = .01), highlighting how
+
+                         recent context can modulate the association with momentary experiential dynamics.
+
+                                   In contrast, the 24-hour model demonstrated a simpler, largely linear pattern in the association
+
+                         between surprisal and headache probability. This model did not benefit from including a quadratic
+
+                         term, although it retained the lagged surprisal factor and its interaction with the current surprisal
+
+                         score (Surprisal × Surprisal                          ). Higher current surprisal was associated with a greater probability of
+                                                                            t-1
+
+                         headache 24 hours later, but the strength of this association decreased as the lagged surprisal
+
+                         increased (Figure 2 and Table 3). Specifically, at low lag values (lag = 0.35), surprisal had a steep
+
+                         positive slope, with increasing odds of headache attack (OR, 5.95; 95% CI, 2.54-13.95; P < .001).
+
+
+                         Figure 2. Probability of Future Headache Attack as a Function of Current Surprisal Based on Different Levels of Lagged Surprisal Score From the Previous Day
+
+                                        A    12-h Adjusted headache probability                                                                                                B    24-h Adjusted headache probability
+
+                                            100                                                                                                                                    100
+
+                                                        Surprisal lag
+                                                                   0.35
+                                              80                                                                                                                                     80
+                                                                   0.6
+                                                                   0.9
+
+                                              60                                                                                                                                     60
+
+
+                                              40                                                                                                                                     40
+
+
+                                              20                                                                                                                                     20
+
+
+                                                0                                                                                                                                      0
+                                                  0                         0.5                         1.0                        1.5                         2.0                       0                         0.5                         1.0                        1.5                         2.0
+                                                                                         Current surprisal score                                                                                                                Current surprisal score
+
+                         The surprisal score from the previous day (lag) modulated the association between current surprisal score and headache risk. Shaded areas represent 95% CIs.
+
+
+                                                                                                                                                                            a
+                         Table 3. Contextual Associations of Surprisal Total Score and Future Headache Attack
+
+                                                                                          Future headache at 12 h                                              Future headache at 24 h
+
+                                                                                          OR (95% CI)                                     P value              OR (95% CI)                             P value
+                                      b
+                          Factors
+
+                              Intercept                                                   0.75 (0.25-2.31)                                .62                  0.28 (0.15-0.51)                        <.001
+
+                              Current headache (yes)
+
+                                  No                                                      1 [Reference]                                   NA                   1 [Reference]                           NA
+
+                                  Yes                                                     1.86 (1.59-2.18)                                <.001                1.63 (1.41-1.89)                        <.001
+                                                                                                                                                                                                                                 Abbreviations: ICC, intraclass correlation coefficient;
+                              Diary type
+                                                                                                                                                                                                                                 NA, not applicable; OR, odds ratio.
+                                  AM                                                      1 [Reference]                                   NA                   1 [Reference]                           NA
+                                                                                                                                                                                                                                 a
+                                                                                                                                                                                                                                   Each model is conducted based on the available
+                                  PM                                                      0.51 (0.44-0.59)                                <.001                0.80 (0.70-0.92)                        .002
+                                                                                                                                                                                                                                   sample size, which may differ across models due to
+                              Surprisal                                                   0.11 (0.00-2.84)                                .18                  5.95 (2.54-13.95)                       <.001
+                                                                                                                                                                                                                                   missing data in either the outcome period (12 vs 24
+                                            2
+                              Surprisal                                                   10.66 (1.12-101.15)                             .04                  NA                                                                  hours) or any lagged terms.
+                                                                                                                                                                                                                                 b
+                              Surprisalt-1                                                0.64 (0.09-4.37)                                .65                  3.54 (1.52-8.22)                        .003                        The interaction terms (Surprisal × Suprisal                           )
+                                                                                                                                                                                                                                                                                                      t-1
+                                                                                                                                                                                                                                   indicate that recent experiences with surprisal alter
+                              Surprisal × Surprisalt-1                                    137.48 (0.82-22 921.53)                         .06                  0.20 (0.07-0.59)                        .004
+                                            2                                                                                                                                                                                      the association of current experiences with surprisal,
+                              Surprisal        × Surprisalt-1                             0.02 (0.00-0.43)                                .01                  NA                                      NA
+                                                                                                                                                                                                                                   in either a linear or a nonlinear way. Surprisal is the
+                                                  c
+                          Random effect                                                                                                                                                                                                                                                        2
+                                                                                                                                                                                                                                   current surprisal total score; surprisal                      is the square
+                                2
+                              σ                                                           3.29                                            NA                   3.29                                    NA
+                                                                                                                                                                                                                                   of the surprisal total score (surprisal x surprisal);
+                              τ00                                                         0.33                                            NA                   0.43                                    NA                          surprisal         is the surprisal total score from the
+                                                                                                                                                                                                                                                 t-1
+                                                                                                                                                                                                                                   previous diary entry.
+                              ICC                                                         0.09                                            NA                   0.12                                    NA
+                                                                                                                                                                                                                                 c                                  2
+                                                                                                                                                                                                                                   The random effect σ                represents total variance; τ                   ,
+                              No. of participants                                         103                                             NA                   103                                     NA                                                                                                        00
+                                                                                                                                                                                                                                   variance component of intercept; τ                        , variance
+                                                                                                                                                                                                                                                                                           11
+                              Observations                                                4440                                            NA                   4440                                    NA
+                                                                                                                                                                                                                                   component of slope; ρ                  , correlation between
+                                               2                       2                                                                                                                                                                                               01
+                              Marginal R         /conditional R                           0.080/0.164                                     NA                   0.031/0.144                             NA
+                                                                                                                                                                                                                                   intercept and slope.
+
+
+                              JAMA Network Open. 2025;8(11):e2542944. doi:10.1001/jamanetworkopen.2025.42944                                                                  (Reprinted)                                                                                   November 11, 2025                     7/11
+
+
+
+Downloaded from jamanetwork.com by guest on 02/14/2026
+
+                    JAMA Network Open | Neurology                                                                                                                Information-Theoretic Trigger Surprisal and Future Headache Activity
+
+                    However, at higher lag values, this association was attenuated, consistent with a negative interaction
+                    between current surprisal and its lagged counterpart (OR, 0.20; 95% CI, 0.07-0.59; P = .004).
+
+
+                    Discussion
+
+                    This cohort study evaluated the association between daily surprisal scores by quantifying the
+                    unexpectedness of daily experiences and the subsequent occurrence of migraine attacks within 12-
+                    and 24-hour periods. We found higher surprisal scores were associated with an increased risk of
+                                                                                                                                                                               14
+                    future headache attacks. These results support our initial hypothesis and replicate earlier findings
+                    in a new, prospectively collected dataset, demonstrating use of surprisal as a valuable metric for
+                    forecasting migraine risk.
+                             The results of the present study provide evidence that the degree to which an individual’s experi-
+                    ences deviate from their usual patterns can be used to identify near-future migraine risk. For each unit
+                    increase in mean surprisal, the odds of a migraine attack rose, with a stronger association observed over
+                    the 24-hour period than the 12-hour period. This finding suggests that the association of daily experi-
+                    ences with migraine onset is not immediate in all cases and may accumulate or evolve. The association
+                    of current surprisal score with future headache risk was attenuated, or even reversed, when recent sur-
+                    prisal scores were already elevated, indicating a possible contextual adaptation or regulatory effect.
+                    These findings suggest that while current surprisal score is a robust risk factor for subsequent headache
+                    activity, its influence is temporally dynamic, moderated by recent history.
+                             A key strength of this study lies in its examination of individual differences. The random slope
+                    models revealed considerable variability in how surprisal altered headache risk across participants.
+                    Some individuals appeared more sensitive to fluctuations in daily life, while others showed little to no
+                    association between surprisal and migraine. Interestingly, those with higher baseline headache risk
+                    tended to show weaker associations with surprisal. This pattern raises the possibility that migraine
+                    activity in these individuals may be affected by factors other than daily behavioral or
+                    environmental changes.
+                             These findings suggest that surprisal may be a useful construct for advancing migraine self-
+                    management. Current trigger-tracking approaches often emphasize binary relationships between
+                    exposures and outcomes, potentially overlooking the dynamic and context-dependent nature of life
+                    experiences. By contrast, surprisal offers an integrative, continuous, person-centered measure that
+                    reflects how unusual a given day is for a specific individual. Embedding surprisal scores into digital
+                    headache diaries or wearable technologies could enable real-time risk forecasting and provide users
+                                                           9,24-26                                                                                                          27-29
+                    with actionable insights.                        Novel interventions might focus not on avoiding specific triggers
+                    but on incorporating behavioral regularity or emotional regulation to control the experience of
+                    surprisal itself.
+                             Our results extend prior work demonstrating the value of information-theoretic approaches in
+                                                  14,15,17
+                    migraine research.                     Earlier studies showed that surprisal scores could discriminate headache
+                    days from nonheadache days and that these scores captured meaningful within-person variation in
+                                                 14
+                    trigger exposures.               Additionally, this study adds several critical dimensions by showing that surprisal
+                    is associated with different aspects of future risk (ie, 12 vs 24 hours). Furthermore, the use of lagged
+                    surprisal values and different times of day (ie, AM and PM) highlights the importance of temporal
+                                                                                                                                                               9,24
+                    context, a feature that has received little attention in prior migraine forecasting models.
+
+                    Limitations
+                    Study limitations should be acknowledged. The final sample size was smaller than initially planned
+                    due to COVID-19 pandemic-related disruptions and precluded the consideration of specific
+                    subpopulations (eg, age and headache type). Additionally, the current analysis focused solely on
+                    magnitude-based surprisal, omitting the change-based component used in earlier work. While lagged
+                    surprisal helped account for short-term fluctuations, future models may benefit from further
+                    consideration of integrating both components. We also did not include potential covariates such as
+
+                         JAMA Network Open. 2025;8(11):e2542944. doi:10.1001/jamanetworkopen.2025.42944                                         (Reprinted)                                                                  November 11, 2025               8/11
+
+
+Downloaded from jamanetwork.com by guest on 02/14/2026
+
+                 JAMA Network Open | Neurology                                                                                            Information-Theoretic Trigger Surprisal and Future Headache Activity
+
+                 acute medication use, which may interact with surprisal to alter migraine risk. Furthermore, the use
+                 of retrospective self-report of headache attacks could be unreliable for some attacks, although the
+                 current study used limited periods (ie, 12-hour retrospection) to reduce the reliance on memory.
+                 Future research should develop methods to estimate surprisal prospectively, consider the
+                 implications of attack features or subgroup membership for associations between surprisal and
+                 headache attack, and consider ways to make the scoring method less burdensome (eg, the time
+                 required to complete hundreds of diary items could be prohibitive for some individuals).
+
+                 Conclusions
+
+                 In this cohort study of the association between surprisal and future headache attacks, findings
+                 supported use of a surprisal scoring system as a dynamic, individualized metric capable of estimating
+                 short-term migraine risk. This finding underscores the value of a person-centered, information-
+                 theoretic approach to understanding migraine triggers, moving beyond static lists of potential causes
+                 to account for the unpredictable and context-sensitive nature of daily life. Incorporating
+                 measurement of surprisal into migraine forecasting tools could provide individuals with a more
+                 effective, personalized strategy for managing headache risk.
+
+
+                 ARTICLE INFORMATION
+                 Accepted for Publication: September 18, 2025.
+                 Published: November 11, 2025. doi:10.1001/jamanetworkopen.2025.42944
+                 Open Access: This is an open access article distributed under the terms of the CC-BY License. © 2025 Turner DP
+                 et al. JAMA Network Open.
+                 Corresponding Author: Dana P. Turner, MSPH, PhD Department of Anesthesia, Critical Care and Pain Medicine,
+                 Massachusetts General Hospital, Harvard Medical School, 55 Fruit St, Boston, MA 02114 (dpturner@mgh.
+                 harvard.edu).
+                 Author Affiliations: Department of Anesthesia, Critical Care and Pain Medicine, Massachusetts General Hospital,
+                 Harvard Medical School, Boston (Turner, Patel, Caplis, Houle); Department of Neurology, UMass, Worcester,
+                 Massachusetts (Patel).
+                 Author Contributions: Dr Turner had full access to all of the data in the study and takes responsibility for the
+                 integrity of the data and the accuracy of the data analysis.
+                 Concept and design: Turner, Houle.
+                 Acquisition, analysis, or interpretation of data: All authors.
+                 Drafting of the manuscript: All authors.
+                 Critical review of the manuscript for important intellectual content: Turner, Patel, Houle.
+                 Statistical analysis: Turner, Houle.
+                 Obtained funding: Turner.
+                 Administrative, technical, or material support: Turner, Patel, Caplis.
+                 Supervision: Turner.
+                 Conflict of Interest Disclosures: Dr Turner reported receiving grants from the National Institute of Neurological
+                 Disorders and Stroke during the conduct of the study. No other disclosures were reported.
+                 Funding/Support: The research reported in this publication was supported by the National Institute of
+                 Neurological Disorders and Stroke of the National Institutes of Health under award number R01NS113823
+                 (Dr Turner).
+                 Role of the Funder/Sponsor: The funder had no role in the design and conduct of the study; collection,
+                 management, analysis, and interpretation of the data; preparation, review, or approval of the manuscript; and
+                 decision to submit the manuscript for publication.
+                 Data Sharing Statement: See the Supplement.
+
+
+                     JAMA Network Open. 2025;8(11):e2542944. doi:10.1001/jamanetworkopen.2025.42944                        (Reprinted)                                                        November 11, 2025         9/11
+
+
+Downloaded from jamanetwork.com by guest on 02/14/2026
+
+                 JAMA Network Open | Neurology                                                                                             Information-Theoretic Trigger Surprisal and Future Headache Activity
+
+                 REFERENCES
+                 1. Seng EK, Martin PR, Houle TT. Lifestyle factors and migraine. Lancet Neurol. 2022;21(10):911-921. doi:10.1016/
+                 S1474-4422(22)00211-3
+                 2. Pellegrino ABW, Davis-Martin RE, Houle TT, Turner DP, Smitherman TA. Perceived triggers of primary headache
+                 disorders: a meta-analysis. Cephalalgia. 2018;38(6):1188-1198. doi:10.1177/0333102417727535
+                 3. Pavlovic JM, Buse DC, Sollars CM, Haut S, Lipton RB. Trigger factors and premonitory features of migraine
+                 attacks: summary of studies. Headache. 2014;54(10):1670-1679. doi:10.1111/head.12468
+                 4. Turner DP, Leffert LR, Houle TT. Appraisal of headache trigger patterns using calendars. Headache. 2020;60
+                 (2):370-381. doi:10.1111/head.13703
+                 5. Vives-Mestres M, Casanova A, Buse DC, et al. Patterns of perceived stress throughout the migraine cycle:
+                 a longitudinal cohort study using daily prospective diary data. Headache. 2021;61(1):90-102. doi:10.1111/
+                 head.13943
+                 6. Marmura MJ. Triggers, protectors, and predictors in episodic migraine. Curr Pain Headache Rep. 2018;22
+                 (12):81. doi:10.1007/s11916-018-0734-0
+                 7. Turner DP. Assessing Headache Triggers: A Practical Guide for Applied Research and Clinical Management.
+                 Springer Nature; 2021. doi:10.1007/978-3-030-81949-1
+                 8. Turner DP, Houle TT. Learning headache triggers through experience: a laboratory study. Headache. 2023;63
+                 (6):721-729. doi:10.1111/head.14496
+                 9. Houle TT, Turner DP, Golding AN, et al. Forecasting individual headache attacks using perceived stress:
+                 development of a multivariable prediction model for persons with episodic migraine. Headache. 2017;57(7):
+                 1041-1050. doi:10.1111/head.13137
+                 10. Lipton RB, Penzien DB, Turner DP, Smitherman TA, Houle TT. Methodological issues in studying rates and
+                 predictors of migraine progression and remission. Headache. 2013;53(6):930-934. doi:10.1111/head.12128
+                 11. Turner DP, Smitherman TA, Martin VT, Penzien DB, Houle TT. Causality and headache triggers. Headache.
+                 2013;53(4):628-635. doi:10.1111/head.12076
+                 12. Turner DP, Houle TT. Influences on headache trigger beliefs and perceptions. Cephalalgia. 2018;38(9):
+                 1545-1553. doi:10.1177/0333102417739310
+                 13. Houle TT, Turner DP. Natural experimentation is a challenging method for identifying headache triggers.
+                 Headache. 2013;53(4):636-643. doi:10.1111/head.12075
+                 14. Turner DP, Lebowitz AD, Chtay I, Houle TT. Headache triggers as surprise. Headache. 2019;59(4):495-508.
+                 doi:10.1111/head.13507
+                 15. Turner DP, Caplis E, Bertsch J, Houle TT. Information theory and headache triggers. Headache. 2023;63(7):
+                 899-907. doi:10.1111/head.14583
+                 16. Shannon CE. A mathematical theory of communication. Bell Syst Tech J. 1948;27:379-423. doi:10.1002/j.1538-
+                 7305.1948.tb01338.x
+                 17. Turner DP, Caplis E, Patel T, Houle TT. Development of a migraine trigger measurement system using surprisal.
+                 Neurology Research International. Published online August 7, 2025. doi:10.1155/nri/8872708
+                 18. von Elm E, Altman DG, Egger M, Pocock SJ, Gøtzsche PC, Vandenbroucke JP; STROBE Initiative. The
+                 Strengthening the Reporting of Observational Studies in Epidemiology (STROBE) statement: guidelines for
+                 reporting observational studies. J Clin Epidemiol. 2008;61(4):344-349. doi:10.1016/j.jclinepi.2007.11.008
+                 19. Headache Classification Committee of the International Headache Society (IHS): The International
+                 Classification of Headache Disorders, 3rd edition. Cephalalgia. 2018;38(1):1-211. doi:10.1177/0333102417738202
+                 20. Harris PA, Taylor R, Thielke R, Payne J, Gonzalez N, Conde JG. Research electronic data capture (REDCap)–a
+                 metadata-driven methodology and workflow process for providing translational research informatics support.
+                 J Biomed Inform. 2009;42(2):377-381. doi:10.1016/j.jbi.2008.08.010
+                 21. Stewart WF, Lipton RB, Whyte J, et al. An international study to assess reliability of the Migraine Disability
+                 Assessment (MIDAS) score. Neurology. 1999;53(5):988-994. doi:10.1212/WNL.53.5.988
+                 22. Shacham S. A shortened version of the Profile of Mood States. J Pers Assess. 1983;47(3):305-306. doi:10.
+                 1207/s15327752jpa4703_14
+                 23. Brantley PJ, Waggoner CD, Jones GN, Rappaport NB. A Daily Stress Inventory: development, reliability, and
+                 validity. J Behav Med. 1987;10(1):61-74. doi:10.1007/BF00845128
+                 24. Houle TT, Deng H, Tegeler CH, Turner DP. Continuous updating of individual headache forecasting models
+                 using Bayesian methods. Headache. 2021;61(8):1264-1273. doi:10.1111/head.14182
+
+
+                     JAMA Network Open. 2025;8(11):e2542944. doi:10.1001/jamanetworkopen.2025.42944                          (Reprinted)                                                       November 11, 2025          10/11
+
+
+Downloaded from jamanetwork.com by guest on 02/14/2026
+
+              JAMA Network Open | Neurology                                                                       Information-Theoretic Trigger Surprisal and Future Headache Activity
+              25. Turner DP, Leffert LR, Houle TT. The treatment implications of forecasting headache. Pain Manag. 2020;10
+              (6):349-352. doi:10.2217/pmt-2020-0027
+              26. Turner DP, Lebowitz AD, Chtay I, Houle TT. Forecasting migraine attacks and the utility of identifying triggers.
+              Curr Pain Headache Rep. 2018;22(9):62. doi:10.1007/s11916-018-0715-3
+              27. Martin PR, Reece J, Callan M, et al. Behavioral management of the triggers of recurrent headache:
+              a randomized controlled trial. Behav Res Ther. 2014;61:1-11. doi:10.1016/j.brat.2014.07.002
+              28. Martin PR. Headache triggers: to avoid or not to avoid, that is the question. Psychol Health. 2000;15:
+              801-809. doi:10.1080/08870440008405582
+              29. Martin PR. Managing headache triggers: think ‘coping’ not ‘avoidance’. Cephalalgia. 2010;30(5):634-637. doi:
+              10.1111/j.1468-2982.2009.01989.x
+              SUPPLEMENT.
+              Data Sharing Statement
+
+
+
+
+
+
+
+
+                 JAMA Network Open. 2025;8(11):e2542944. doi:10.1001/jamanetworkopen.2025.42944       (Reprinted)                                           November 11, 2025      11/11
+Downloaded from jamanetwork.com by guest on 02/14/2026
+

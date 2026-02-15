@@ -37,7 +37,7 @@ Three event types share common fields (id, timestamp, notes):
 ## Key Commands
 
 ```bash
-npm install          # Install dependencies
+npm install --legacy-peer-deps  # Install dependencies (--legacy-peer-deps required due to react-test-renderer peer conflict)
 npx expo start       # Start dev server
 npx expo run:ios     # Run on iOS
 npx expo run:android # Run on Android
