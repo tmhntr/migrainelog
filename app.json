@@ -13,7 +13,14 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "appleTeamId": "AKZQ6532QD",
+      "bundleIdentifier": "dev.tmhntr.migrainelog",
+      "entitlements": {
+        "com.apple.security.application-groups": [
+                "group.dev.tmhntr.migrainelog"
+              ]
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -31,6 +38,7 @@
         "projectId": "cfa4e0c4-4157-4328-bfb3-7d4ab5b51f2b"
       }
     },
-    "owner": "migrainelog"
+    "owner": "migrainelog",
+    "plugins": ["@bacons/apple-targets"]
   }
 }
