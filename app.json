@@ -19,8 +19,12 @@
       "bundleIdentifier": "dev.tmhntr.migrainelog",
       "entitlements": {
         "com.apple.security.application-groups": [
+          "group.dev.tmhntr.migrainelog",
           "group.dev.tmhntr.migrainelog"
         ]
+      },
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
@@ -59,7 +63,8 @@
     },
     "owner": "migrainelog",
     "plugins": [
-      "@bacons/apple-targets"
+      "@bacons/apple-targets",
+      "expo-font"
     ]
   }
 }
