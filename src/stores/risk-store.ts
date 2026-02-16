@@ -9,6 +9,7 @@ import {
   getLastEpisodeTimestamp,
   getAverageEpisodeGap,
 } from '../db/queries';
+import { setWidgetData } from '../../modules/widget-bridge';
 
 interface RiskState {
   score: number;
@@ -50,11 +51,21 @@ export const useRiskStore = create<RiskState>((set) => ({
       lastEpisodeTimestamp: lastEpisode,
     });
 
+    const now = new Date().toISOString();
+
     set({
       score: result.score,
       label: result.label,
       factors: result.factors,
-      lastCalculated: new Date().toISOString(),
+      lastCalculated: now,
+    });
+
+    setWidgetData({
+      riskScore: result.score,
+      riskLabel: result.label,
+      triggerCount24h: recentTriggers.length,
+      episodeCount7d: recentEpisodeCount,
+      lastUpdated: now,
     });
   },
 }));
