@@ -3,9 +3,11 @@
   "version": "1.0.0",
   "main": "index.ts",
   "scripts": {
+    "postinstall": "node scripts/fix-expo-cli-widget.js",
     "start": "expo start",
     "android": "expo run:android",
-    "prewidget": "EXPO_NO_GIT_STATUS=1 ",
+    "prewidget": "EXPO_NO_GIT_STATUS=1 npx expo prebuild -p ios --clean",
+    "prewidget:blank": "EXPO_NO_GIT_STATUS=1 npx expo prebuild --template ./node_modules/@bacons/apple-targets/prebuild-blank.tgz --clean",
     "ios": "expo run:ios",
     "web": "expo start --web",
     "test": "jest",
@@ -42,6 +44,11 @@
     "jest": "^29.7.0",
     "jest-expo": "^54.0.17",
     "typescript": "~5.9.2"
+  },
+  "expo": {
+    "autolinking": {
+      "nativeModulesDir": "modules"
+    }
   },
   "private": true
 }

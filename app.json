@@ -19,8 +19,8 @@
       "bundleIdentifier": "dev.tmhntr.migrainelog",
       "entitlements": {
         "com.apple.security.application-groups": [
-                "group.dev.tmhntr.migrainelog"
-              ]
+          "group.dev.tmhntr.migrainelog"
+        ]
       }
     },
     "android": {
@@ -29,17 +29,37 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "dev.tmhntr.migrainelog"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "cfa4e0c4-4157-4328-bfb3-7d4ab5b51f2b"
+        "projectId": "cfa4e0c4-4157-4328-bfb3-7d4ab5b51f2b",
+        "build": {
+          "experimental": {
+            "ios": {
+              "appExtensions": [
+                {
+                  "bundleIdentifier": "dev.tmhntr.migrainelog.widget",
+                  "targetName": "widget",
+                  "entitlements": {
+                    "com.apple.security.application-groups": [
+                      "group.dev.tmhntr.migrainelog"
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
       }
     },
     "owner": "migrainelog",
-    "plugins": ["@bacons/apple-targets"]
+    "plugins": [
+      "@bacons/apple-targets"
+    ]
   }
 }
