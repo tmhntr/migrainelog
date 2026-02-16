@@ -2,7 +2,10 @@
 module.exports = (config) => ({
   type: "widget",
   icon: "https://github.com/expo.png",
+  frameworks: ["SwiftUI", "WidgetKit"],
   entitlements: {
-    /* Add entitlements */
+    "com.apple.security.application-groups": [
+      "group.dev.tmhntr.migrainelog",
+    ],
   },
 });
