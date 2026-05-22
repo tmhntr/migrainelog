@@ -40,7 +40,7 @@ Three event types share common fields (id, timestamp, notes):
 ## Key Commands
 
 ```bash
-npm install --legacy-peer-deps  # Install dependencies (--legacy-peer-deps required: eslint@10 vs @typescript-eslint/eslint-plugin peer range)
+npm install          # Install dependencies
 npm start            # Start the Expo dev server (alias: expo start)
 npm run ios          # Start dev server targeting iOS simulator (expo start --ios)
 npm run android      # Start dev server targeting Android emulator (expo start --android)
