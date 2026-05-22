@@ -40,16 +40,16 @@ Three event types share common fields (id, timestamp, notes):
 ## Key Commands
 
 ```bash
-npm install          # Install dependencies
-npm start            # Start the Expo dev server (alias: expo start)
-npm run ios          # Start dev server targeting iOS simulator (expo start --ios)
-npm run android      # Start dev server targeting Android emulator (expo start --android)
-npm run web          # Start dev server for web
-npx expo run:ios     # Full native iOS build (use when prebuild/native changes are needed)
-npx expo run:android # Full native Android build
-npm test             # Run tests (Jest, jest-expo preset)
-npm run lint         # Run ESLint over src/
-npm run typecheck    # Run tsc --noEmit
+npx expo install              # Install dependencies (uses Expo's version resolver)
+npx expo install <package>    # Add a new package with SDK-compatible version
+npx expo install --check      # Check all deps are SDK-compatible (useful in CI)
+npx expo install --fix        # Auto-fix any version mismatches
+npx expo start                # Start dev server
+npx expo run:ios              # Run on iOS
+npx expo run:android          # Run on Android
+npm test                      # Run tests (Jest)
+npm run lint                  # Run ESLint
+npm run typecheck             # Run tsc --noEmit
 ```
 
 ## Testing
