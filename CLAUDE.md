@@ -67,6 +67,15 @@ npm run typecheck    # Run tsc --noEmit
 - The widget reads from a shared SQLite database or shared UserDefaults/SharedPreferences for the risk level value.
 - Navigation structure: bottom tabs for Dashboard, Triggers, Episodes, Treatments, Settings. Each tab has its own native-stack navigator under `src/navigation/stacks/`.
 
+## Git Branching Strategy
+
+- **`main`** — Release branch. Always stable. Only updated by merging `dev` when cutting a release.
+- **`dev`** — Integration/staging branch. All feature work lands here first.
+- **Feature branches** — Branch off `dev`. Name as `feat/<desc>`, `fix/<desc>`, or `chore/<desc>`. Delete after merge.
+- **Linear history** — Rebase before merging. On GitHub PRs, use "Rebase and merge" (not "Create a merge commit").
+- **PR flow:** `feat/*` → PR into `dev` → when releasing, `dev` → PR into `main` (rebase and merge).
+- **Never force push `main` or `dev`** unless rewriting history by agreement. Feature branches may be force-pushed freely.
+
 ## System Design
 
 - Full architecture: [`docs/SYSTEM_DESIGN.md`](docs/SYSTEM_DESIGN.md) — database schema, state management, navigation, risk calculation, widget architecture, component hierarchy, and the complete file manifest.
