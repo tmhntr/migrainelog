@@ -6,11 +6,12 @@ MigraineLog is a React Native (Expo) mobile app for tracking migraine triggers, 
 
 ## Tech Stack
 
-- React Native with Expo (managed workflow, eject to bare if widget support requires it)
-- TypeScript (strict mode)
+- React Native 0.81 + React 19 on Expo SDK 54 (managed workflow; eject to bare if widget support requires it)
+- TypeScript (strict mode, extends `expo/tsconfig.base`)
 - SQLite via `expo-sqlite` for local persistence
-- Zustand for state management
-- React Navigation for routing (bottom tabs + stack navigators)
+- `expo-crypto` (`randomUUID`) for generating event IDs
+- Zustand 5 for state management
+- React Navigation 7 (bottom tabs + native-stack navigators)
 
 ## Architecture Decisions
 
@@ -22,9 +23,11 @@ MigraineLog is a React Native (Expo) mobile app for tracking migraine triggers, 
 
 - Use functional components with hooks. No class components.
 - Prefer named exports over default exports.
-- File naming: `kebab-case.ts` for utilities, `PascalCase.tsx` for components/screens.
-- Keep database access in `src/db/` — screens and components should not import `expo-sqlite` directly.
-- Types go in `src/models/` — one file per entity (trigger.ts, episode.ts, treatment.ts) plus a shared `event.ts` for common fields.
+- File naming:
+  - `PascalCase.tsx` for React components, screens, and navigators (`src/components/`, `src/screens/`, `src/navigation/`).
+  - `kebab-case.ts` for everything else — utilities, hooks, stores, models, and DB helpers.
+- Keep database access in `src/db/` — screens and components should not import `expo-sqlite` directly. Consume the DB via `useDatabase()` from `src/hooks/use-database.ts`.
+- Types go in `src/models/` — one file per entity (`trigger.ts`, `episode.ts`, `treatment.ts`) plus a shared `event.ts` for common fields and risk types.
 
 ## Data Model
 
@@ -38,11 +41,14 @@ Three event types share common fields (id, timestamp, notes):
 
 ```bash
 npm install --legacy-peer-deps  # Install dependencies (--legacy-peer-deps required due to react-test-renderer peer conflict)
-npx expo start       # Start dev server
-npx expo run:ios     # Run on iOS
-npx expo run:android # Run on Android
-npm test             # Run tests (Jest)
-npm run lint         # Run ESLint
+npm start            # Start the Expo dev server (alias: expo start)
+npm run ios          # Start dev server targeting iOS simulator (expo start --ios)
+npm run android      # Start dev server targeting Android emulator (expo start --android)
+npm run web          # Start dev server for web
+npx expo run:ios     # Full native iOS build (use when prebuild/native changes are needed)
+npx expo run:android # Full native Android build
+npm test             # Run tests (Jest, jest-expo preset)
+npm run lint         # Run ESLint over src/
 npm run typecheck    # Run tsc --noEmit
 ```
 
@@ -54,14 +60,17 @@ npm run typecheck    # Run tsc --noEmit
 
 ## Important Patterns
 
-- All DB operations are async. Use the query helpers in `src/db/queries.ts` which return typed results.
-- Zustand stores in `src/stores/` hydrate from SQLite on app launch and write-through on mutations.
+- All DB operations are async. Use the query helpers in `src/db/queries.ts` which return typed results (row → model mappers live alongside them).
+- Schema changes go through the numbered migration runner in `src/db/migrations.ts` (applied by `src/db/migrate.ts`). Bump the version, add an `up`, and update queries/models in the same change.
+- `DatabaseProvider` in `src/hooks/use-database.ts` opens the DB, runs migrations, hydrates every Zustand store, and recalculates risk before rendering the app. Components read the DB via `useDatabase()` and check readiness with `useDatabaseReady()`.
+- Zustand stores in `src/stores/` (trigger, episode, treatment, risk) hydrate from SQLite on app launch and write-through on mutations. The risk store recomputes after mutations to other stores.
 - The widget reads from a shared SQLite database or shared UserDefaults/SharedPreferences for the risk level value.
-- Navigation structure: bottom tabs for Dashboard, Triggers, Episodes, Treatments, Settings. Each tab has its own stack navigator.
+- Navigation structure: bottom tabs for Dashboard, Triggers, Episodes, Treatments, Settings. Each tab has its own native-stack navigator under `src/navigation/stacks/`.
 
 ## System Design
 
-The full architecture document is at [`docs/SYSTEM_DESIGN.md`](docs/SYSTEM_DESIGN.md). It covers database schema, state management, navigation, risk calculation, widget architecture, component hierarchy, and the complete file manifest.
+- Full architecture: [`docs/SYSTEM_DESIGN.md`](docs/SYSTEM_DESIGN.md) — database schema, state management, navigation, risk calculation, widget architecture, component hierarchy, and the complete file manifest.
+- Surprisal-based risk scoring (planned extension to `src/utils/risk.ts`): [`docs/SURPRISAL_INTEGRATION.md`](docs/SURPRISAL_INTEGRATION.md), grounded in Turner et al., *JAMA Network Open* 2025 (PDF + text in `docs/`).
 
 ## Claude Skills
 
