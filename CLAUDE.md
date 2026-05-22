@@ -67,6 +67,45 @@ npm run typecheck             # Run tsc --noEmit
 - The widget reads from a shared SQLite database or shared UserDefaults/SharedPreferences for the risk level value.
 - Navigation structure: bottom tabs for Dashboard, Triggers, Episodes, Treatments, Settings. Each tab has its own native-stack navigator under `src/navigation/stacks/`.
 
+## Commit Messages
+
+All commits **must** use [Conventional Commits](https://www.conventionalcommits.org/) format. This is enforced by commitlint via a husky `commit-msg` hook and drives automated semantic releases.
+
+```
+type(scope): description
+
+[optional body]
+
+[optional footer(s)]
+```
+
+**Types that trigger a release:**
+- `feat:` — minor version bump (new feature)
+- `fix:` — patch version bump (bug fix)
+- `perf:` — patch version bump (performance improvement)
+- Append `!` after type/scope (e.g. `feat!:`) or add a `BREAKING CHANGE:` footer for a major version bump
+
+**Types that do NOT trigger a release:**
+- `chore:`, `docs:`, `ci:`, `refactor:`, `test:`, `style:`, `build:`
+
+**Examples:**
+```
+feat(triggers): add weather API integration for automatic trigger detection
+fix(risk): correct cold-start threshold check for < 7 entries
+docs: update SYSTEM_DESIGN.md with widget bridge sequence diagram
+chore(deps): bump expo-sqlite to 16.1.0
+feat!: redesign episode severity scale from 1-5 to 1-10
+```
+
+## Releases
+
+Releases are fully automated via `semantic-release` and GitHub Actions:
+
+- **`main`** → production release (e.g. `v1.2.0`) — Expo GitHub App triggers production EAS builds
+- **`dev`** → beta pre-release (e.g. `v1.3.0-beta.1`) — Expo GitHub App triggers preview EAS builds
+- Version bumps, changelogs, git tags, and GitHub Releases are all automated — never bump `version` in `package.json` manually.
+- Config: `.releaserc.json`, `.github/workflows/release.yml`
+
 ## Git Branching Strategy
 
 - **`main`** — Release branch. Always stable. Only updated by merging `dev` when cutting a release.
