@@ -14,12 +14,11 @@
     },
     "scheme": "migrainelog",
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "appleTeamId": "AKZQ6532QD",
       "bundleIdentifier": "dev.tmhntr.migrainelog",
       "entitlements": {
         "com.apple.security.application-groups": [
-          "group.dev.tmhntr.migrainelog",
           "group.dev.tmhntr.migrainelog"
         ]
       },
