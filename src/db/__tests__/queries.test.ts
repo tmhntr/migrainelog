@@ -26,11 +26,11 @@ import {
 import type { SQLiteDatabase } from 'expo-sqlite';
 
 // ---------------------------------------------------------------------------
-// Mock uuid
+// Mock expo-crypto (queries.ts generates IDs via randomUUID)
 // ---------------------------------------------------------------------------
 
-jest.mock('uuid', () => ({
-  v4: jest.fn(() => 'test-uuid-1234'),
+jest.mock('expo-crypto', () => ({
+  randomUUID: jest.fn(() => 'test-uuid-1234'),
 }));
 
 // ---------------------------------------------------------------------------
