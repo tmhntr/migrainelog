@@ -10,36 +10,45 @@ import { useRiskStore } from "../stores/risk-store";
 interface DatabaseContextValue {
   db: SQLiteDatabase | null;
   isReady: boolean;
+  error: Error | null;
 }
 
 const DatabaseContext = createContext<DatabaseContextValue>({
   db: null,
   isReady: false,
+  error: null,
 });
 
 export function DatabaseProvider({ children }: { children: React.ReactNode }) {
   const [db, setDb] = useState<SQLiteDatabase | null>(null);
   const [isReady, setIsReady] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     let cancelled = false;
 
     async function init() {
-      const database = await openDatabase();
-      await migrateDbIfNeeded(database);
+      try {
+        const database = await openDatabase();
+        await migrateDbIfNeeded(database);
 
-      if (cancelled) return;
-      setDb(database);
+        if (cancelled) return;
+        setDb(database);
 
-      await Promise.all([
-        useTriggerStore.getState().hydrate(database),
-        useEpisodeStore.getState().hydrate(database),
-        useTreatmentStore.getState().hydrate(database),
-      ]);
-      await useRiskStore.getState().recalculate(database);
+        await Promise.all([
+          useTriggerStore.getState().hydrate(database),
+          useEpisodeStore.getState().hydrate(database),
+          useTreatmentStore.getState().hydrate(database),
+        ]);
+        await useRiskStore.getState().recalculate(database);
 
-      if (!cancelled) {
-        setIsReady(true);
+        if (!cancelled) {
+          setIsReady(true);
+        }
+      } catch (e) {
+        if (!cancelled) {
+          setError(e instanceof Error ? e : new Error(String(e)));
+        }
       }
     }
 
@@ -51,7 +60,7 @@ export function DatabaseProvider({ children }: { children: React.ReactNode }) {
 
   return React.createElement(
     DatabaseContext.Provider,
-    { value: { db, isReady } },
+    { value: { db, isReady, error } },
     children,
   );
 }
@@ -69,4 +78,9 @@ export function useDatabase(): SQLiteDatabase {
 export function useDatabaseReady(): boolean {
   const { isReady } = useContext(DatabaseContext);
   return isReady;
+}
+
+export function useDatabaseError(): Error | null {
+  const { error } = useContext(DatabaseContext);
+  return error;
 }
