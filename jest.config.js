@@ -15,7 +15,7 @@ module.exports = {
         ],
       },
       transformIgnorePatterns: [
-        'node_modules/(?!(uuid|expo-sqlite)/)',
+        'node_modules/(?!(uuid|expo-sqlite|expo-crypto)/)',
       ],
       moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
     },
