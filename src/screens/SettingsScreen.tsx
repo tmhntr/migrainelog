@@ -52,6 +52,17 @@ export function SettingsScreen(_props: SettingsScreenProps) {
         </TouchableOpacity>
       </View>
 
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Medical Disclaimer</Text>
+        <View style={styles.card}>
+          <Text style={styles.disclaimer}>
+            MigraineLog is a personal tracking tool. It does not diagnose, treat, or
+            prevent any medical condition, and it does not predict migraines. Consult a
+            qualified healthcare provider for medical advice.
+          </Text>
+        </View>
+      </View>
+
       <ConfirmDialog
         visible={confirmVisible}
         title="Clear All Data"
@@ -107,6 +118,11 @@ const styles = StyleSheet.create({
     color: '#666666',
     lineHeight: 20,
     marginTop: 12,
+  },
+  disclaimer: {
+    fontSize: 13,
+    color: '#666666',
+    lineHeight: 19,
   },
   dangerButton: {
     backgroundColor: '#F44336',
