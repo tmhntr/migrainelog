@@ -98,9 +98,8 @@ Initial release.
 ## Copyright
 
 ```
-© 2026 Tim Hunter
+© 2026 Timothy Hunter
 ```
-(Replace with the exact legal name you want shown; this is the App Store copyright field.)
 
 ---
 
