@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.ts",
   "scripts": {
-    "postinstall": "node scripts/fix-expo-cli-widget.js",
+    "postinstall": "node scripts/fix-expo-cli-widget.js && node scripts/fix-expo-modules-jsi-date.js",
     "start": "expo start",
     "android": "expo run:android",
     "prewidget": "EXPO_NO_GIT_STATUS=1 npx expo prebuild -p ios --clean",
