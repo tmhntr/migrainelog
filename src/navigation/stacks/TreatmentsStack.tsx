@@ -4,12 +4,16 @@ import type { TreatmentsStackParamList } from '../types';
 import { TreatmentListScreen } from '../../screens/TreatmentListScreen';
 import { TreatmentDetailScreen } from '../../screens/TreatmentDetailScreen';
 import { TreatmentFormScreen } from '../../screens/TreatmentFormScreen';
+import { buildStackScreenOptions } from '../navigation-theme';
+import { useTheme } from '../../theme';
 
 const Stack = createNativeStackNavigator<TreatmentsStackParamList>();
 
 export function TreatmentsStack(): React.JSX.Element {
+  const theme = useTheme();
+
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={buildStackScreenOptions(theme)}>
       <Stack.Screen
         name="TreatmentList"
         component={TreatmentListScreen}
@@ -18,12 +22,12 @@ export function TreatmentsStack(): React.JSX.Element {
       <Stack.Screen
         name="TreatmentDetail"
         component={TreatmentDetailScreen}
-        options={{ title: 'Treatment Detail' }}
+        options={{ title: 'Treatment' }}
       />
       <Stack.Screen
         name="TreatmentForm"
         component={TreatmentFormScreen}
-        options={{ title: 'Treatment Form' }}
+        options={{ title: 'New treatment' }}
       />
     </Stack.Navigator>
   );

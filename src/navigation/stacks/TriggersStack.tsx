@@ -4,12 +4,16 @@ import type { TriggersStackParamList } from '../types';
 import { TriggerListScreen } from '../../screens/TriggerListScreen';
 import { TriggerDetailScreen } from '../../screens/TriggerDetailScreen';
 import { TriggerFormScreen } from '../../screens/TriggerFormScreen';
+import { buildStackScreenOptions } from '../navigation-theme';
+import { useTheme } from '../../theme';
 
 const Stack = createNativeStackNavigator<TriggersStackParamList>();
 
 export function TriggersStack(): React.JSX.Element {
+  const theme = useTheme();
+
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={buildStackScreenOptions(theme)}>
       <Stack.Screen
         name="TriggerList"
         component={TriggerListScreen}
@@ -18,12 +22,12 @@ export function TriggersStack(): React.JSX.Element {
       <Stack.Screen
         name="TriggerDetail"
         component={TriggerDetailScreen}
-        options={{ title: 'Trigger Detail' }}
+        options={{ title: 'Trigger' }}
       />
       <Stack.Screen
         name="TriggerForm"
         component={TriggerFormScreen}
-        options={{ title: 'Trigger Form' }}
+        options={{ title: 'New trigger' }}
       />
     </Stack.Navigator>
   );

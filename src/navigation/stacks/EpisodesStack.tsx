@@ -4,12 +4,16 @@ import type { EpisodesStackParamList } from '../types';
 import { EpisodeListScreen } from '../../screens/EpisodeListScreen';
 import { EpisodeDetailScreen } from '../../screens/EpisodeDetailScreen';
 import { EpisodeFormScreen } from '../../screens/EpisodeFormScreen';
+import { buildStackScreenOptions } from '../navigation-theme';
+import { useTheme } from '../../theme';
 
 const Stack = createNativeStackNavigator<EpisodesStackParamList>();
 
 export function EpisodesStack(): React.JSX.Element {
+  const theme = useTheme();
+
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={buildStackScreenOptions(theme)}>
       <Stack.Screen
         name="EpisodeList"
         component={EpisodeListScreen}
@@ -18,12 +22,12 @@ export function EpisodesStack(): React.JSX.Element {
       <Stack.Screen
         name="EpisodeDetail"
         component={EpisodeDetailScreen}
-        options={{ title: 'Episode Detail' }}
+        options={{ title: 'Episode' }}
       />
       <Stack.Screen
         name="EpisodeForm"
         component={EpisodeFormScreen}
-        options={{ title: 'Episode Form' }}
+        options={{ title: 'New episode' }}
       />
     </Stack.Navigator>
   );
