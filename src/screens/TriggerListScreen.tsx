@@ -1,17 +1,20 @@
 import React, { useMemo, useState } from 'react';
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, View } from 'react-native';
 
 import type { TriggerListScreenProps } from '../navigation/types';
 import type { Trigger } from '../models/trigger';
 import { TRIGGER_CATEGORIES } from '../models/trigger';
 import { useTriggerStore } from '../stores/trigger-store';
+import { useTheme } from '../theme';
 import { EventCard } from '../components/EventCard';
 import { FilterChips } from '../components/FilterChips';
 import { EmptyState } from '../components/EmptyState';
+import { Fab } from '../components/ui';
 
 export function TriggerListScreen({
   navigation,
 }: TriggerListScreenProps): React.JSX.Element {
+  const theme = useTheme();
   const { triggers } = useTriggerStore();
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
@@ -37,8 +40,8 @@ export function TriggerListScreen({
   );
 
   return (
-    <View style={styles.container}>
-      <View style={styles.filterRow}>
+    <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
+      <View style={{ paddingVertical: theme.space.md }}>
         <FilterChips
           options={[...TRIGGER_CATEGORIES]}
           selected={selectedCategories}
@@ -51,63 +54,29 @@ export function TriggerListScreen({
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         contentContainerStyle={
-          filteredTriggers.length === 0 ? styles.emptyContainer : styles.list
+          filteredTriggers.length === 0
+            ? { flex: 1 }
+            : { gap: theme.space.md, paddingBottom: 96 }
         }
         ListEmptyComponent={
           <EmptyState
-            title="No Triggers"
-            message="Start tracking your migraine triggers to identify patterns."
-            actionLabel="Add Trigger"
-            onAction={handleAddTrigger}
+            title={
+              selectedCategories.length > 0
+                ? 'Nothing matches these filters'
+                : 'No triggers yet'
+            }
+            message={
+              selectedCategories.length > 0
+                ? 'Clear a filter to see the rest of your log.'
+                : 'Log what you were exposed to — sleep, stress, food, weather — and patterns build up over time.'
+            }
+            actionLabel={selectedCategories.length > 0 ? undefined : 'Log a trigger'}
+            onAction={selectedCategories.length > 0 ? undefined : handleAddTrigger}
           />
         }
       />
 
-      <TouchableOpacity
-        style={styles.fab}
-        onPress={handleAddTrigger}
-        activeOpacity={0.7}
-      >
-        <Text style={styles.fabText}>+</Text>
-      </TouchableOpacity>
+      <Fab onPress={handleAddTrigger} accessibilityLabel="Log a trigger" />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5F5F5',
-  },
-  filterRow: {
-    paddingVertical: 12,
-  },
-  list: {
-    paddingBottom: 80,
-  },
-  emptyContainer: {
-    flex: 1,
-  },
-  fab: {
-    position: 'absolute',
-    right: 16,
-    bottom: 16,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: '#6200EE',
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 6,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-  },
-  fabText: {
-    color: '#FFFFFF',
-    fontSize: 28,
-    fontWeight: '300',
-    lineHeight: 30,
-  },
-});

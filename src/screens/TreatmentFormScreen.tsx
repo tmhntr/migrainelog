@@ -1,12 +1,5 @@
 import React, { useLayoutEffect, useMemo, useState } from 'react';
-import {
-  Alert,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native';
+import { Alert } from 'react-native';
 
 import type { TreatmentFormScreenProps } from '../navigation/types';
 import type { TreatmentType } from '../models/treatment';
@@ -15,6 +8,7 @@ import { useDatabase } from '../hooks/use-database';
 import { useTreatmentStore } from '../stores/treatment-store';
 import { CategoryPicker } from '../components/CategoryPicker';
 import { DateTimePicker } from '../components/DateTimePicker';
+import { Button, Field, Input, Screen } from '../components/ui';
 import { formatISO, parseISO } from '../utils/date-helpers';
 
 export function TreatmentFormScreen({
@@ -38,21 +32,24 @@ export function TreatmentFormScreen({
     existing ? parseISO(existing.timestamp) : new Date()
   );
   const [notes, setNotes] = useState<string>(existing?.notes ?? '');
+  const [nameError, setNameError] = useState<string | undefined>(undefined);
   const [submitting, setSubmitting] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: editId ? 'Edit Treatment' : 'New Treatment',
+      title: editId ? 'Edit treatment' : 'New treatment',
     });
   }, [navigation, editId]);
 
   const handleSubmit = async (): Promise<void> => {
     if (submitting) return;
 
+    // Inline rather than an alert: the error belongs next to the field it is about.
     if (!name.trim()) {
-      Alert.alert('Validation', 'Please enter a treatment name.');
+      setNameError('Give the treatment a name so you can recognise it later.');
       return;
     }
+    setNameError(undefined);
 
     setSubmitting(true);
 
@@ -72,112 +69,52 @@ export function TreatmentFormScreen({
 
       navigation.goBack();
     } catch (error) {
-      Alert.alert('Error', 'Failed to save treatment. Please try again.');
+      Alert.alert('Could not save', 'The treatment was not saved. Try again.');
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.label}>Type</Text>
-      <CategoryPicker
-        categories={TREATMENT_TYPES}
-        value={type}
-        onChange={(val) => setType(val as TreatmentType)}
-      />
+    <Screen scroll gutter>
+      <Field label="Type">
+        <CategoryPicker
+          categories={TREATMENT_TYPES}
+          value={type}
+          onChange={(val) => setType(val as TreatmentType)}
+        />
+      </Field>
 
-      <Text style={styles.label}>Name</Text>
-      <TextInput
-        style={styles.textInputSingle}
-        value={name}
-        onChangeText={setName}
-        placeholder="e.g. Ibuprofen 400mg"
-        placeholderTextColor="#999999"
-      />
+      <Field label="Name" error={nameError}>
+        <Input
+          value={name}
+          onChangeText={(text) => {
+            setName(text);
+            if (nameError !== undefined) setNameError(undefined);
+          }}
+          placeholder="Ibuprofen 400mg"
+        />
+      </Field>
 
-      <Text style={styles.label}>Date & Time</Text>
-      <DateTimePicker value={timestamp} onChange={setTimestamp} />
+      <Field label="When">
+        <DateTimePicker value={timestamp} onChange={setTimestamp} />
+      </Field>
 
-      <Text style={styles.label}>Notes</Text>
-      <TextInput
-        style={styles.textInput}
-        value={notes}
-        onChangeText={setNotes}
-        placeholder="Optional notes..."
-        placeholderTextColor="#999999"
-        multiline
-        numberOfLines={3}
-        textAlignVertical="top"
-      />
+      <Field label="Notes">
+        <Input
+          value={notes}
+          onChangeText={setNotes}
+          placeholder="Anything worth remembering later"
+          multiline
+        />
+      </Field>
 
-      <TouchableOpacity
-        style={[styles.submitButton, submitting && styles.submitButtonDisabled]}
+      <Button
+        label={submitting ? 'Saving' : editId ? 'Save changes' : 'Save treatment'}
+        size="lg"
         onPress={handleSubmit}
-        activeOpacity={0.7}
         disabled={submitting}
-      >
-        <Text style={styles.submitText}>
-          {submitting
-            ? 'Saving...'
-            : editId
-              ? 'Update Treatment'
-              : 'Save Treatment'}
-        </Text>
-      </TouchableOpacity>
-    </ScrollView>
+      />
+    </Screen>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5F5F5',
-  },
-  content: {
-    padding: 16,
-    gap: 12,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#333333',
-    marginTop: 4,
-  },
-  textInputSingle: {
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 14,
-    color: '#333333',
-  },
-  textInput: {
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 14,
-    color: '#333333',
-    minHeight: 80,
-  },
-  submitButton: {
-    backgroundColor: '#6200EE',
-    paddingVertical: 14,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  submitButtonDisabled: {
-    opacity: 0.6,
-  },
-  submitText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-});

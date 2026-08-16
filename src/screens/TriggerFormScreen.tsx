@@ -1,13 +1,5 @@
 import React, { useLayoutEffect, useMemo, useState } from 'react';
-import {
-  Alert,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Alert } from 'react-native';
 
 import type { TriggerFormScreenProps } from '../navigation/types';
 import type { TriggerCategory } from '../models/trigger';
@@ -17,6 +9,7 @@ import { useTriggerStore } from '../stores/trigger-store';
 import { CategoryPicker } from '../components/CategoryPicker';
 import { SeveritySlider } from '../components/SeveritySlider';
 import { DateTimePicker } from '../components/DateTimePicker';
+import { Button, Field, Input, Screen } from '../components/ui';
 import { formatISO, parseISO } from '../utils/date-helpers';
 
 export function TriggerFormScreen({
@@ -44,7 +37,7 @@ export function TriggerFormScreen({
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: editId ? 'Edit Trigger' : 'New Trigger',
+      title: editId ? 'Edit trigger' : 'New trigger',
     });
   }, [navigation, editId]);
 
@@ -68,92 +61,45 @@ export function TriggerFormScreen({
 
       navigation.goBack();
     } catch (error) {
-      Alert.alert('Error', 'Failed to save trigger. Please try again.');
+      Alert.alert('Could not save', 'The trigger was not saved. Try again.');
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.label}>Category</Text>
-      <CategoryPicker
-        categories={TRIGGER_CATEGORIES}
-        value={category}
-        onChange={(val) => setCategory(val as TriggerCategory)}
-      />
+    <Screen scroll gutter>
+      <Field label="Category">
+        <CategoryPicker
+          categories={TRIGGER_CATEGORIES}
+          value={category}
+          onChange={(val) => setCategory(val as TriggerCategory)}
+        />
+      </Field>
 
-      <Text style={styles.label}>Severity</Text>
-      <SeveritySlider value={severity} onChange={setSeverity} min={1} max={5} />
+      <Field label="Severity" hint="1 is barely noticeable, 5 is intense.">
+        <SeveritySlider value={severity} onChange={setSeverity} min={1} max={5} />
+      </Field>
 
-      <Text style={styles.label}>Date & Time</Text>
-      <DateTimePicker value={timestamp} onChange={setTimestamp} />
+      <Field label="When">
+        <DateTimePicker value={timestamp} onChange={setTimestamp} />
+      </Field>
 
-      <Text style={styles.label}>Notes</Text>
-      <TextInput
-        style={styles.textInput}
-        value={notes}
-        onChangeText={setNotes}
-        placeholder="Optional notes..."
-        placeholderTextColor="#999999"
-        multiline
-        numberOfLines={3}
-        textAlignVertical="top"
-      />
+      <Field label="Notes">
+        <Input
+          value={notes}
+          onChangeText={setNotes}
+          placeholder="Anything worth remembering later"
+          multiline
+        />
+      </Field>
 
-      <TouchableOpacity
-        style={[styles.submitButton, submitting && styles.submitButtonDisabled]}
+      <Button
+        label={submitting ? 'Saving' : editId ? 'Save changes' : 'Save trigger'}
+        size="lg"
         onPress={handleSubmit}
-        activeOpacity={0.7}
         disabled={submitting}
-      >
-        <Text style={styles.submitText}>
-          {submitting ? 'Saving...' : editId ? 'Update Trigger' : 'Save Trigger'}
-        </Text>
-      </TouchableOpacity>
-    </ScrollView>
+      />
+    </Screen>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5F5F5',
-  },
-  content: {
-    padding: 16,
-    gap: 12,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#333333',
-    marginTop: 4,
-  },
-  textInput: {
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 14,
-    color: '#333333',
-    minHeight: 80,
-  },
-  submitButton: {
-    backgroundColor: '#6200EE',
-    paddingVertical: 14,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  submitButtonDisabled: {
-    opacity: 0.6,
-  },
-  submitText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-});
