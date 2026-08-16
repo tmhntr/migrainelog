@@ -1,15 +1,11 @@
 import React, { useState } from 'react';
-import {
-  Modal,
-  Platform,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Modal, Platform, Pressable, View } from 'react-native';
 import RNDateTimePicker, {
   type DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
+
+import { useTheme } from '../theme';
+import { Button, Surface, Text } from './ui';
 
 export interface DateTimePickerProps {
   value: Date;
@@ -46,6 +42,7 @@ export function DateTimePicker({
   value,
   onChange,
 }: DateTimePickerProps): React.JSX.Element {
+  const theme = useTheme();
   const isIOS = Platform.OS === 'ios';
   // Android shows one system dialog per mode, so the date step is followed by
   // a time step. iOS renders a single inline `datetime` picker in a modal.
@@ -107,24 +104,29 @@ export function DateTimePicker({
   };
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.display}
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.space.md }}>
+      <Pressable
         onPress={handleOpen}
-        activeOpacity={0.7}
         accessibilityRole="button"
         accessibilityLabel={`Date and time: ${formatReadableDate(value)}. Tap to change.`}
+        style={({ pressed }) => [
+          {
+            flex: 1,
+            justifyContent: 'center',
+            minHeight: theme.minTouchTarget,
+            backgroundColor: theme.colors.surface,
+            borderRadius: theme.radius.sm,
+            borderWidth: theme.border.hairline,
+            borderColor: theme.colors.border,
+            paddingHorizontal: theme.space.md,
+          },
+          pressed && { opacity: 0.75 },
+        ]}
       >
-        <Text style={styles.dateText}>{formatReadableDate(value)}</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.nowButton}
-        onPress={handleSetNow}
-        activeOpacity={0.7}
-        accessibilityRole="button"
-      >
-        <Text style={styles.nowButtonText}>Now</Text>
-      </TouchableOpacity>
+        <Text variant="data">{formatReadableDate(value)}</Text>
+      </Pressable>
+
+      <Button label="Now" variant="secondary" onPress={handleSetNow} />
 
       {!isIOS && androidMode !== null && (
         <RNDateTimePicker
@@ -142,108 +144,49 @@ export function DateTimePicker({
           animationType="fade"
           onRequestClose={handleIOSCancel}
         >
-          <TouchableOpacity
-            style={styles.backdrop}
-            activeOpacity={1}
+          <Pressable
+            style={{
+              flex: 1,
+              backgroundColor: theme.colors.overlay,
+              justifyContent: 'flex-end',
+            }}
             onPress={handleIOSCancel}
           >
-            <TouchableOpacity style={styles.sheet} activeOpacity={1}>
-              <RNDateTimePicker
-                value={draft}
-                mode="datetime"
-                display="spinner"
-                onChange={handleIOSChange}
-              />
-              <View style={styles.sheetActions}>
-                <TouchableOpacity
-                  style={styles.sheetButton}
-                  onPress={handleIOSCancel}
-                  activeOpacity={0.7}
+            <Pressable onPress={(e) => e.stopPropagation()}>
+              <Surface
+                raised
+                style={{
+                  borderBottomLeftRadius: 0,
+                  borderBottomRightRadius: 0,
+                  borderTopLeftRadius: theme.radius.lg,
+                  borderTopRightRadius: theme.radius.lg,
+                  paddingBottom: theme.space.xxxl,
+                  gap: theme.space.md,
+                }}
+              >
+                <RNDateTimePicker
+                  value={draft}
+                  mode="datetime"
+                  display="spinner"
+                  onChange={handleIOSChange}
+                  themeVariant={theme.scheme}
+                  textColor={theme.colors.ink}
+                />
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'flex-end',
+                    gap: theme.space.md,
+                  }}
                 >
-                  <Text style={styles.cancelText}>Cancel</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.sheetButton, styles.confirmButton]}
-                  onPress={handleIOSConfirm}
-                  activeOpacity={0.7}
-                >
-                  <Text style={styles.confirmText}>Done</Text>
-                </TouchableOpacity>
-              </View>
-            </TouchableOpacity>
-          </TouchableOpacity>
+                  <Button label="Cancel" variant="secondary" onPress={handleIOSCancel} />
+                  <Button label="Done" onPress={handleIOSConfirm} />
+                </View>
+              </Surface>
+            </Pressable>
+          </Pressable>
         </Modal>
       )}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 8,
-    gap: 12,
-  },
-  display: {
-    flex: 1,
-    backgroundColor: '#F5F5F5',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-  },
-  dateText: {
-    fontSize: 14,
-    color: '#333333',
-  },
-  nowButton: {
-    backgroundColor: '#2196F3',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 8,
-  },
-  nowButtonText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  backdrop: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
-    justifyContent: 'flex-end',
-  },
-  sheet: {
-    backgroundColor: '#FFFFFF',
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    paddingTop: 8,
-    paddingBottom: 24,
-    paddingHorizontal: 16,
-  },
-  sheetActions: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    gap: 12,
-    marginTop: 8,
-  },
-  sheetButton: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 8,
-  },
-  confirmButton: {
-    backgroundColor: '#2196F3',
-  },
-  cancelText: {
-    fontSize: 15,
-    color: '#666666',
-    fontWeight: '600',
-  },
-  confirmText: {
-    fontSize: 15,
-    color: '#FFFFFF',
-    fontWeight: '600',
-  },
-});

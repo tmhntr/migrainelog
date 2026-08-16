@@ -1,5 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View, useColorScheme } from 'react-native';
+
+import { buildTheme } from '../theme';
 
 interface ErrorBoundaryProps {
   children: React.ReactNode;
@@ -7,6 +9,42 @@ interface ErrorBoundaryProps {
 
 interface ErrorBoundaryState {
   hasError: boolean;
+}
+
+/**
+ * The fallback resolves its own theme from the OS rather than from
+ * `ThemeProvider`. The boundary sits above every provider in the tree, so by
+ * the time it renders there may be no context left to read — and a crash
+ * screen that renders unstyled is barely better than the blank one.
+ */
+function ErrorFallback(): React.JSX.Element {
+  const scheme = useColorScheme();
+  const theme = buildTheme(scheme === 'dark' ? 'dark' : 'light');
+
+  return (
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: theme.space.xxxl,
+        gap: theme.space.md,
+        backgroundColor: theme.colors.background,
+      }}
+    >
+      <Text
+        style={[theme.type.title, { color: theme.colors.ink, textAlign: 'center' }]}
+      >
+        Something went wrong
+      </Text>
+      <Text
+        style={[theme.type.body, { color: theme.colors.inkMuted, textAlign: 'center' }]}
+      >
+        MigraineLog ran into an unexpected problem. Please close the app and open
+        it again. Your saved data is safe.
+      </Text>
+    </View>
+  );
 }
 
 /**
@@ -26,40 +64,9 @@ export class ErrorBoundary extends React.Component<
 
   render() {
     if (this.state.hasError) {
-      return (
-        <View style={styles.container}>
-          <Text style={styles.title}>Something went wrong</Text>
-          <Text style={styles.body}>
-            MigraineLog ran into an unexpected problem. Please close the app and
-            open it again. Your saved data is safe.
-          </Text>
-        </View>
-      );
+      return <ErrorFallback />;
     }
 
     return this.props.children;
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 32,
-    backgroundColor: '#FFFFFF',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#333333',
-    marginBottom: 12,
-    textAlign: 'center',
-  },
-  body: {
-    fontSize: 15,
-    color: '#666666',
-    lineHeight: 22,
-    textAlign: 'center',
-  },
-});

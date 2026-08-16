@@ -1,5 +1,8 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView } from 'react-native';
+
+import { useTheme } from '../theme';
+import { Chip } from './ui';
 
 export interface CategoryPickerProps {
   categories: readonly string[];
@@ -12,54 +15,22 @@ export function CategoryPicker({
   value,
   onChange,
 }: CategoryPickerProps): React.JSX.Element {
+  const theme = useTheme();
+
   return (
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.scrollContent}
+      contentContainerStyle={{ gap: theme.space.sm, paddingRight: theme.space.lg }}
     >
-      {categories.map((category) => {
-        const isSelected = category === value;
-        return (
-          <TouchableOpacity
-            key={category}
-            style={[styles.chip, isSelected && styles.chipSelected]}
-            onPress={() => onChange(category)}
-            activeOpacity={0.7}
-          >
-            <Text style={[styles.chipText, isSelected && styles.chipTextSelected]}>
-              {category.charAt(0).toUpperCase() + category.slice(1)}
-            </Text>
-          </TouchableOpacity>
-        );
-      })}
+      {categories.map((category) => (
+        <Chip
+          key={category}
+          label={category.charAt(0).toUpperCase() + category.slice(1)}
+          selected={category === value}
+          onPress={() => onChange(category)}
+        />
+      ))}
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  scrollContent: {
-    paddingHorizontal: 8,
-    gap: 8,
-  },
-  chip: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#DDDDDD',
-    backgroundColor: '#FFFFFF',
-  },
-  chipSelected: {
-    backgroundColor: '#2196F3',
-    borderColor: '#2196F3',
-  },
-  chipText: {
-    fontSize: 14,
-    color: '#666666',
-    fontWeight: '500',
-  },
-  chipTextSelected: {
-    color: '#FFFFFF',
-  },
-});
