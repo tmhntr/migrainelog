@@ -5,11 +5,12 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "scheme": "migrainelog",
     "ios": {
+      "icon": "./assets/MigraineLogIconV1.icon",
       "supportsTablet": false,
-      "appleTeamId": "AKZQ6532QD",
+      "appleTeamId": "4TBM93UCZ7",
       "bundleIdentifier": "dev.tmhntr.migrainelog",
       "entitlements": {
         "com.apple.security.application-groups": [
@@ -23,7 +24,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#000000"
       },
       "predictiveBackGestureEnabled": false,
       "package": "dev.tmhntr.migrainelog"
@@ -64,7 +65,12 @@
         {
           "image": "./assets/splash-icon.png",
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#F2F0EC",
+          "dark": {
+            "image": "./assets/splash-icon.png",
+            "resizeMode": "contain",
+            "backgroundColor": "#0F1013"
+          }
         }
       ],
       "@react-native-community/datetimepicker"
