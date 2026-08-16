@@ -6,6 +6,7 @@ import { useTriggerStore } from "../stores/trigger-store";
 import { useEpisodeStore } from "../stores/episode-store";
 import { useTreatmentStore } from "../stores/treatment-store";
 import { useRiskStore } from "../stores/risk-store";
+import { usePreferenceStore } from "../stores/preference-store";
 
 interface DatabaseContextValue {
   db: SQLiteDatabase | null;
@@ -39,6 +40,7 @@ export function DatabaseProvider({ children }: { children: React.ReactNode }) {
           useTriggerStore.getState().hydrate(database),
           useEpisodeStore.getState().hydrate(database),
           useTreatmentStore.getState().hydrate(database),
+          usePreferenceStore.getState().hydrate(database),
         ]);
         await useRiskStore.getState().recalculate(database);
 
