@@ -26,6 +26,8 @@ MigraineLog is a React Native (Expo) mobile app for tracking migraine triggers, 
 - File naming:
   - `PascalCase.tsx` for React components, screens, and navigators (`src/components/`, `src/screens/`, `src/navigation/`).
   - `kebab-case.ts` for everything else — utilities, hooks, stores, models, and DB helpers.
+- **Never hardcode a colour, font size, or spacing value.** Everything comes from the design system in `src/theme/` — see the Design System section below. A raw hex literal outside `src/theme/palette.ts` is a bug.
+- Prefer the primitives in `src/components/ui/` (`Text`, `Surface`, `Button`, `Chip`, `Field`, `Input`, `Screen`, `Section`, `DetailRow`, `Divider`, `Fab`) over raw `View`/`Text`/`TouchableOpacity`. Reach for `StyleSheet.create` only for layout that the primitives don't cover.
 - Keep database access in `src/db/` — screens and components should not import `expo-sqlite` directly. Consume the DB via `useDatabase()` from `src/hooks/use-database.ts`.
 - Types go in `src/models/` — one file per entity (`trigger.ts`, `episode.ts`, `treatment.ts`) plus a shared `event.ts` for common fields and risk types.
 
@@ -114,6 +116,23 @@ Releases are fully automated via `semantic-release` and GitHub Actions:
 - **Linear history** — Rebase before merging. On GitHub PRs, use "Rebase and merge" (not "Create a merge commit").
 - **PR flow:** `feat/*` → PR into `dev` → when releasing, `dev` → PR into `main` (rebase and merge).
 - **Never force push `main` or `dev`** unless rewriting history by agreement. Feature branches may be force-pushed freely.
+
+## Design System
+
+Lives in `src/theme/` (tokens) and `src/components/ui/` (primitives).
+
+- `tokens.ts` — scheme-independent scales: `space` (4pt grid), `radius`, `border`, `duration`, and a nine-role type scale. Numeric variants (`display`, `metric`, `data`) carry `tabular-nums` so digits align and the risk score doesn't jitter on recalculation.
+- `palette.ts` — `light` and `dark` colour roles, the four-step risk ramp, and per-event-type colours. Components consume role names (`ink`, `surface`, `accent`), never literals.
+- `use-theme.ts` — `ThemeProvider`, `useTheme()`, `useThemedStyles(factory)`. The factory passed to `useThemedStyles` must be module-scope; it is deliberately excluded from the memo deps.
+- `src/navigation/navigation-theme.ts` — bridges tokens into React Navigation's header/tab-bar/container chrome.
+
+Three constraints are deliberate and should not be "fixed" without a reason:
+
+1. **No pure white or pure black.** Light grounds on warm paper `#F2F0EC`; dark grounds on `#0F1013`. This app is used by photophobic people mid-attack.
+2. **The risk ramp climbs warmer and darker, never brighter.** High risk is a desaturated rose, not a saturated red — the moment the gauge reads high is the moment its reader can least tolerate glare. `RiskGauge` also encodes level in the *shape* of the lit region, so it survives greyscale and colour blindness.
+3. **Hairline borders and surface lift instead of drop shadows.** Shadows read as noise on the light ground and are invisible on the dark one.
+
+Theme preference (`system` / `light` / `dark`) persists in the `preferences` table (migration v2) via `preference-store.ts`, hydrated in `DatabaseProvider`. Forcing dark independently of the OS is a real accessibility need here, not a cosmetic toggle.
 
 ## System Design
 
