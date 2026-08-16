@@ -1,13 +1,18 @@
 import React from 'react';
-import { ActivityIndicator, View, Text, StyleSheet } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 import { NavigationContainer, LinkingOptions } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { StatusBar } from 'expo-status-bar';
 import {
   DatabaseProvider,
   useDatabaseReady,
   useDatabaseError,
 } from './src/hooks/use-database';
+import { usePreferenceStore } from './src/stores/preference-store';
+import { ThemeProvider, useTheme } from './src/theme';
+import { buildNavigationTheme } from './src/navigation/navigation-theme';
 import { ErrorBoundary } from './src/components/ErrorBoundary';
+import { Text } from './src/components/ui';
 import { TabNavigator } from './src/navigation/TabNavigator';
 import type { RootTabParamList } from './src/navigation/types';
 
@@ -40,14 +45,26 @@ const linking: LinkingOptions<RootTabParamList> = {
 };
 
 function AppContent() {
+  const theme = useTheme();
   const isReady = useDatabaseReady();
   const error = useDatabaseError();
 
   if (error) {
     return (
-      <View style={styles.message}>
-        <Text style={styles.messageTitle}>Unable to load your data</Text>
-        <Text style={styles.messageBody}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          padding: theme.space.xxxl,
+          gap: theme.space.md,
+          backgroundColor: theme.colors.background,
+        }}
+      >
+        <Text variant="title" style={{ textAlign: 'center' }}>
+          Unable to load your data
+        </Text>
+        <Text variant="body" tone="muted" style={{ textAlign: 'center' }}>
           MigraineLog could not open its local database. Please close the app and
           open it again.
         </Text>
@@ -57,17 +74,45 @@ function AppContent() {
 
   if (!isReady) {
     return (
-      <View style={styles.loading}>
-        <ActivityIndicator size="large" color="#6200EE" />
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: theme.colors.background,
+        }}
+      >
+        <ActivityIndicator size="large" color={theme.colors.accent} />
       </View>
     );
   }
 
   return (
-    <NavigationContainer linking={linking}>
+    <NavigationContainer linking={linking} theme={buildNavigationTheme(theme)}>
       <TabNavigator />
     </NavigationContainer>
   );
+}
+
+/**
+ * Sits inside `DatabaseProvider` so it can read the persisted theme choice,
+ * which hydrates alongside the event stores. Until that resolves the provider
+ * falls back to following the OS.
+ */
+function ThemedApp() {
+  const themePreference = usePreferenceStore((s) => s.themePreference);
+
+  return (
+    <ThemeProvider preference={themePreference}>
+      <ThemedStatusBar />
+      <AppContent />
+    </ThemeProvider>
+  );
+}
+
+function ThemedStatusBar() {
+  const theme = useTheme();
+  return <StatusBar style={theme.scheme === 'dark' ? 'light' : 'dark'} />;
 }
 
 export default function App() {
@@ -75,37 +120,9 @@ export default function App() {
     <ErrorBoundary>
       <SafeAreaProvider>
         <DatabaseProvider>
-          <AppContent />
+          <ThemedApp />
         </DatabaseProvider>
       </SafeAreaProvider>
     </ErrorBoundary>
   );
 }
-
-const styles = StyleSheet.create({
-  loading: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  message: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 32,
-    backgroundColor: '#FFFFFF',
-  },
-  messageTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#333333',
-    marginBottom: 12,
-    textAlign: 'center',
-  },
-  messageBody: {
-    fontSize: 15,
-    color: '#666666',
-    lineHeight: 22,
-    textAlign: 'center',
-  },
-});
