@@ -22,6 +22,8 @@ import {
   getLastEpisodeTimestamp,
   getAverageEpisodeGap,
   listRecentEvents,
+  getPreference,
+  setPreference,
 } from '../queries';
 import type { SQLiteDatabase } from 'expo-sqlite';
 
@@ -770,5 +772,55 @@ describe('listRecentEvents', () => {
       expect.any(String),
       [20]
     );
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Preferences
+// ---------------------------------------------------------------------------
+
+describe('preferences', () => {
+  let db: ReturnType<typeof createMockDb>;
+
+  beforeEach(() => {
+    db = createMockDb();
+  });
+
+  it('returns the stored value for a key', async () => {
+    db.getFirstAsync.mockResolvedValue({ value: 'dark' });
+
+    const result = await getPreference(
+      db as unknown as SQLiteDatabase,
+      'theme_preference'
+    );
+
+    const [sql, params] = db.getFirstAsync.mock.calls[0];
+    expect(sql).toContain('FROM preferences');
+    expect(params).toEqual(['theme_preference']);
+    expect(result).toBe('dark');
+  });
+
+  it('returns null when the key has never been set', async () => {
+    db.getFirstAsync.mockResolvedValue(null);
+
+    const result = await getPreference(
+      db as unknown as SQLiteDatabase,
+      'theme_preference'
+    );
+
+    expect(result).toBeNull();
+  });
+
+  it('upserts so a second write replaces the first', async () => {
+    await setPreference(
+      db as unknown as SQLiteDatabase,
+      'theme_preference',
+      'light'
+    );
+
+    const [sql, params] = db.runAsync.mock.calls[0];
+    expect(sql).toContain('INSERT INTO preferences');
+    expect(sql).toContain('ON CONFLICT(key) DO UPDATE');
+    expect(params).toEqual(['theme_preference', 'light']);
   });
 });

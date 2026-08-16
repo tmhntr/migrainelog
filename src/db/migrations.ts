@@ -66,4 +66,19 @@ export const migrations: Migration[] = [
       );
     },
   },
+  {
+    version: 2,
+    up: async (db: SQLiteDatabase): Promise<void> => {
+      // Key-value store for app preferences. Introduced for the theme
+      // override, which has to survive relaunch: someone who needs the dark
+      // presentation to use the app at all should not have to re-pick it.
+      await db.runAsync(`
+        CREATE TABLE IF NOT EXISTS preferences (
+          key TEXT PRIMARY KEY,
+          value TEXT NOT NULL,
+          updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+        );
+      `);
+    },
+  },
 ];
