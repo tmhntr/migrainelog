@@ -134,6 +134,14 @@ Three constraints are deliberate and should not be "fixed" without a reason:
 
 Theme preference (`system` / `light` / `dark`) persists in the `preferences` table (migration v2) via `preference-store.ts`, hydrated in `DatabaseProvider`. Forcing dark independently of the OS is a real accessibility need here, not a cosmetic toggle.
 
+### The iOS widget shares the design system by duplication
+
+The widget is a separate native target and cannot import `src/theme/`, so `targets/widget/Theme.swift` restates the tokens literally — same hex values, same 4pt grid, same nine-role type scale. **A token change on the JS side must be mirrored there in the same commit**, or the widget and the app drift apart.
+
+The widget also bundles the app's own `MaterialIcons.ttf` (registered via `UIAppFonts` in `targets/widget/Info.plist`) and renders the same glyph code points the app passes to `<MaterialIcons name="…" />`. That is deliberate: SF Symbols has no faithful equivalent for `change-history`, `blur-on`, or `medication`, and an approximation would make the widget read as a different app. `targets/widget/RiskGaugeView.swift` is likewise a port of `RiskGauge.tsx`, tick ramp exponent included.
+
+The widget follows the *system* colour scheme, not the in-app theme preference — iOS home screen widgets are expected to, and the app is configured `userInterfaceStyle: automatic` to match.
+
 ## System Design
 
 - Full architecture: [`docs/SYSTEM_DESIGN.md`](docs/SYSTEM_DESIGN.md) — database schema, state management, navigation, risk calculation, widget architecture, component hierarchy, and the complete file manifest.

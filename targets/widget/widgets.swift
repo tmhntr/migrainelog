@@ -32,18 +32,29 @@ struct RiskData {
         )
     }
 
-    var color: Color {
+    /// The four-step ramp from `palette.ts`, not the stock system colours.
+    var tone: Tone {
         switch label {
-        case "critical": return .red
-        case "high": return .orange
-        case "moderate": return .yellow
-        default: return .green
+        case "critical": return Theme.riskCritical
+        case "high": return Theme.riskHigh
+        case "moderate": return Theme.riskModerate
+        default: return Theme.riskLow
         }
     }
 
+    /// Matches `LABEL_TEXT` in `RiskGauge.tsx`. Note that `high` reads
+    /// "Elevated" and `critical` reads "High" — the widget used to title-case
+    /// the raw key, so it disagreed with the app about what the top two rungs
+    /// are called.
     var displayLabel: String {
-        label.prefix(1).uppercased() + label.dropFirst()
+        switch label {
+        case "critical": return "High"
+        case "high": return "Elevated"
+        case "moderate": return "Moderate"
+        default: return "Low"
+        }
     }
+
 }
 
 // MARK: - Timeline
@@ -72,137 +83,207 @@ struct RiskTimelineProvider: TimelineProvider {
     }
 }
 
-// MARK: - Views
+// MARK: - Quick actions
 
-struct RiskGaugeView: View {
-    let data: RiskData
+/// The three loggable event types, in the order the app's `QuickLogButton`
+/// renders them, with the same glyphs and the same per-type colours.
+enum QuickAction: CaseIterable {
+    case trigger, episode, treatment
 
-    var body: some View {
-        VStack(spacing: 4) {
-            ZStack {
-                Circle()
-                    .stroke(Color.gray.opacity(0.2), lineWidth: 6)
-                    .frame(width: 60, height: 60)
+    var label: String {
+        switch self {
+        case .trigger: return "Trigger"
+        case .episode: return "Episode"
+        case .treatment: return "Treatment"
+        }
+    }
 
-                Circle()
-                    .trim(from: 0, to: CGFloat(data.score) / 100.0)
-                    .stroke(data.color, style: StrokeStyle(lineWidth: 6, lineCap: .round))
-                    .frame(width: 60, height: 60)
-                    .rotationEffect(.degrees(-90))
+    var icon: MaterialIcon {
+        switch self {
+        case .trigger: return .trigger
+        case .episode: return .episode
+        case .treatment: return .treatment
+        }
+    }
 
-                Text("\(data.score)")
-                    .font(.system(size: 20, weight: .bold, design: .rounded))
-                    .foregroundColor(data.color)
-            }
+    var tone: Tone {
+        switch self {
+        case .trigger: return Theme.eventTrigger
+        case .episode: return Theme.eventEpisode
+        case .treatment: return Theme.eventTreatment
+        }
+    }
 
-            Text(data.displayLabel)
-                .font(.system(size: 12, weight: .semibold))
-                .foregroundColor(data.color)
+    /// Matches the `linking` config in `App.tsx`.
+    var url: URL {
+        switch self {
+        case .trigger: return URL(string: "migrainelog://add/trigger")!
+        case .episode: return URL(string: "migrainelog://add/episode")!
+        case .treatment: return URL(string: "migrainelog://add/treatment")!
         }
     }
 }
 
-struct QuickActionButton: View {
-    let icon: String
-    let label: String
-    let color: Color
+/**
+ A quick-add row: tinted glyph tile, then the label, on a hairline-bordered
+ surface. The old version stacked a white-on-saturated-colour glyph over a tiny
+ 9pt caption — three loud chips that fought the risk reading for attention and
+ sat below the legible-size floor. This is the app's card treatment instead:
+ surface, hairline, colour carried by a soft tint rather than a solid block.
+ */
+struct QuickActionRow: View {
+    let action: QuickAction
 
     var body: some View {
-        VStack(spacing: 2) {
-            Image(systemName: icon)
-                .font(.system(size: 16, weight: .medium))
-                .foregroundColor(.white)
-                .frame(width: 32, height: 32)
-                .background(color)
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+        Link(destination: action.url) {
+            HStack(spacing: Space.sm) {
+                MaterialIconView(action.icon, size: 18, color: action.tone.base)
+                    .frame(width: 26, height: 26)
+                    .background(action.tone.soft, in: RoundedRectangle(cornerRadius: Radius.sm))
 
-            Text(label)
-                .font(.system(size: 9, weight: .medium))
-                .foregroundColor(.secondary)
-                .lineLimit(1)
+                Text(action.label)
+                    .font(TypeScale.label)
+                    .foregroundStyle(Theme.ink)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+
+                Spacer(minLength: 0)
+            }
+            .padding(.horizontal, Space.sm)
+            .padding(.vertical, Space.xs)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+            .background(Theme.surface, in: RoundedRectangle(cornerRadius: Radius.md))
+            .overlay(
+                RoundedRectangle(cornerRadius: Radius.md)
+                    .strokeBorder(Theme.border, lineWidth: BorderWidth.hairline)
+            )
         }
+        .accessibilityLabel("Log \(action.label.lowercased())")
+    }
+}
+
+/**
+ The two recent counts, each led by its event glyph.
+
+ Spelling the counts out ("12 triggers · 24h   11 episodes · 7d") needs about
+ 230pt and the left column has ~175pt, so it truncated as soon as either count
+ reached two digits. The glyph carries the noun instead — the same triangle and
+ dot field the app uses — which fits, colour-codes the pair, and keeps the
+ window labels that make the numbers mean anything.
+
+ The counts were being read from the app group and never displayed before this.
+ */
+struct RecentCounts: View {
+    let data: RiskData
+
+    var body: some View {
+        HStack(spacing: Space.md) {
+            item(.trigger, value: data.triggerCount24h, window: "24h",
+                 accessibility: "\(pluralised(data.triggerCount24h, "trigger")) in the last 24 hours")
+            item(.episode, value: data.episodeCount7d, window: "7d",
+                 accessibility: "\(pluralised(data.episodeCount7d, "episode")) in the last 7 days")
+            Spacer(minLength: 0)
+        }
+    }
+
+    /// The glyph carries the noun visually, but VoiceOver has to say it.
+    private func pluralised(_ count: Int, _ noun: String) -> String {
+        "\(count) \(noun)\(count == 1 ? "" : "s")"
+    }
+
+    private func item(
+        _ action: QuickAction,
+        value: Int,
+        window: String,
+        accessibility: String
+    ) -> some View {
+        HStack(spacing: Space.xs) {
+            MaterialIconView(action.icon, size: 13, color: action.tone.base)
+
+            Text("\(value) · \(window)")
+                .font(TypeScale.data)
+                .foregroundStyle(Theme.inkMuted)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(accessibility)
+    }
+}
+
+/// Small caption used to head each column, so the two halves of the medium
+/// layout start on the same optical line.
+struct ColumnHeading: View {
+    let text: String
+
+    var body: some View {
+        Text(text.uppercased())
+            .font(TypeScale.caption)
+            .tracking(TypeScale.captionTracking)
+            .foregroundStyle(Theme.inkFaint)
     }
 }
 
 // MARK: - Small Widget
 
+/**
+ 155–170pt square, minus the system's ~16pt content margins, leaves roughly
+ 123pt of height. That budget is why the small family shows the reading and
+ nothing else: caption, score, word, bar. Anything more would have to shrink the
+ number, which is the one thing the widget exists to show.
+ */
 struct MigraineWidgetSmallView: View {
     let entry: RiskEntry
 
     var body: some View {
-        VStack(spacing: 8) {
-            HStack {
-                Text("Migraine Risk")
-                    .font(.system(size: 11, weight: .semibold))
-                    .foregroundColor(.secondary)
-                Spacer()
-            }
-
-            RiskGaugeView(data: entry.data)
-
-            Spacer(minLength: 0)
-        }
-        .padding(4)
-        .widgetURL(URL(string: "migrainelog://dashboard"))
+        RiskReadout(data: entry.data, stacked: true, tickHeight: 18)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .widgetURL(URL(string: "migrainelog://dashboard"))
     }
 }
 
 // MARK: - Medium Widget
 
+/**
+ Two columns on a shared top baseline: the reading on the left, quick actions on
+ the right. The right column is width-clamped rather than proportional so
+ "Treatment" never wraps, and the left column takes the remainder — which is
+ what lets the number and the word sit on one baseline here but not in the
+ small family.
+ */
 struct MigraineWidgetMediumView: View {
     let entry: RiskEntry
 
+    private let actionColumnWidth: CGFloat = 118
+
     var body: some View {
-        HStack(spacing: 16) {
-            // Left side: Risk gauge
-            VStack(spacing: 4) {
-                Text("Migraine Risk")
-                    .font(.system(size: 11, weight: .semibold))
-                    .foregroundColor(.secondary)
+        HStack(alignment: .top, spacing: Space.md) {
+            VStack(alignment: .leading, spacing: Space.xs) {
+                RiskReadout(data: entry.data, stacked: false, tickHeight: 22)
 
-                RiskGaugeView(data: entry.data)
-
-                Spacer(minLength: 0)
+                RecentCounts(data: entry.data)
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
 
-            Divider()
+            Rectangle()
+                .fill(Theme.border)
+                .frame(width: BorderWidth.hairline)
+                .frame(maxHeight: .infinity)
 
-            // Right side: Quick actions
-            VStack(spacing: 8) {
-                Text("Quick Add")
-                    .font(.system(size: 11, weight: .semibold))
-                    .foregroundColor(.secondary)
+            VStack(alignment: .leading, spacing: Space.xs) {
+                ColumnHeading(text: "Quick add")
 
-                HStack(spacing: 12) {
-                    Link(destination: URL(string: "migrainelog://add/trigger")!) {
-                        QuickActionButton(
-                            icon: "bolt.fill",
-                            label: "Trigger",
-                            color: .orange
-                        )
-                    }
-
-                    Link(destination: URL(string: "migrainelog://add/episode")!) {
-                        QuickActionButton(
-                            icon: "brain.head.profile",
-                            label: "Episode",
-                            color: .red
-                        )
-                    }
-
-                    Link(destination: URL(string: "migrainelog://add/treatment")!) {
-                        QuickActionButton(
-                            icon: "cross.case.fill",
-                            label: "Treatment",
-                            color: .blue
-                        )
-                    }
+                // Equal-height rows: the stack divides the remaining space, so
+                // the three tiles stay aligned across device sizes instead of
+                // being pinned to a hardcoded height.
+                ForEach(QuickAction.allCases, id: \.self) { action in
+                    QuickActionRow(action: action)
                 }
-
-                Spacer(minLength: 0)
             }
+            .frame(width: actionColumnWidth, alignment: .leading)
         }
-        .padding(4)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .widgetURL(URL(string: "migrainelog://dashboard"))
     }
 }
 
@@ -215,16 +296,23 @@ struct MigraineWidget: Widget {
         StaticConfiguration(kind: kind, provider: RiskTimelineProvider()) { entry in
             if #available(iOS 17.0, *) {
                 MigraineWidgetContainerView(entry: entry)
-                    .containerBackground(.fill.tertiary, for: .widget)
+                    // The app's warm paper / near-black grounds rather than
+                    // `.fill.tertiary`: no pure white, no pure black.
+                    .containerBackground(Theme.background, for: .widget)
             } else {
                 MigraineWidgetContainerView(entry: entry)
-                    .padding()
-                    .background()
+                    .padding(Space.lg)
+                    .background(Theme.background)
             }
         }
         .configurationDisplayName("Migraine Risk")
         .description("View your current migraine risk level and quickly log events.")
         .supportedFamilies([.systemSmall, .systemMedium])
+        // Take over the container margins so every family insets by exactly
+        // one `Space.lg`, applied once in the container view below. The old
+        // `.padding(4)` sat inside the system margins and compounded with them,
+        // which is why the two families used to inset by different amounts.
+        .contentMarginsDisabled()
     }
 }
 
@@ -233,12 +321,15 @@ struct MigraineWidgetContainerView: View {
     let entry: RiskEntry
 
     var body: some View {
-        switch widgetFamily {
-        case .systemMedium:
-            MigraineWidgetMediumView(entry: entry)
-        default:
-            MigraineWidgetSmallView(entry: entry)
+        Group {
+            switch widgetFamily {
+            case .systemMedium:
+                MigraineWidgetMediumView(entry: entry)
+            default:
+                MigraineWidgetSmallView(entry: entry)
+            }
         }
+        .padding(Space.lg)
     }
 }
 
@@ -247,13 +338,17 @@ struct MigraineWidgetContainerView: View {
 #Preview(as: .systemSmall) {
     MigraineWidget()
 } timeline: {
+    RiskEntry(date: .now, data: RiskData(score: 8, label: "low", triggerCount24h: 0, episodeCount7d: 0, lastUpdated: ""))
     RiskEntry(date: .now, data: RiskData(score: 35, label: "moderate", triggerCount24h: 2, episodeCount7d: 1, lastUpdated: ""))
     RiskEntry(date: .now, data: RiskData(score: 72, label: "high", triggerCount24h: 4, episodeCount7d: 3, lastUpdated: ""))
+    RiskEntry(date: .now, data: RiskData(score: 100, label: "critical", triggerCount24h: 12, episodeCount7d: 11, lastUpdated: ""))
 }
 
 #Preview(as: .systemMedium) {
     MigraineWidget()
 } timeline: {
+    RiskEntry(date: .now, data: RiskData(score: 8, label: "low", triggerCount24h: 0, episodeCount7d: 0, lastUpdated: ""))
     RiskEntry(date: .now, data: RiskData(score: 35, label: "moderate", triggerCount24h: 2, episodeCount7d: 1, lastUpdated: ""))
     RiskEntry(date: .now, data: RiskData(score: 72, label: "high", triggerCount24h: 4, episodeCount7d: 3, lastUpdated: ""))
+    RiskEntry(date: .now, data: RiskData(score: 100, label: "critical", triggerCount24h: 12, episodeCount7d: 11, lastUpdated: ""))
 }
