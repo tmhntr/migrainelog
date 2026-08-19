@@ -6,7 +6,10 @@ import { useTriggerStore } from "../stores/trigger-store";
 import { useEpisodeStore } from "../stores/episode-store";
 import { useTreatmentStore } from "../stores/treatment-store";
 import { useRiskStore } from "../stores/risk-store";
-import { usePreferenceStore } from "../stores/preference-store";
+import {
+  usePreferenceStore,
+  needsOnboarding,
+} from "../stores/preference-store";
 
 interface DatabaseContextValue {
   db: SQLiteDatabase | null;
@@ -19,6 +22,28 @@ const DatabaseContext = createContext<DatabaseContextValue>({
   isReady: false,
   error: null,
 });
+
+/**
+ * Someone upgrading from a build that predates onboarding has no completion
+ * mark but plenty of data. Showing them a welcome screen after six months of
+ * logging would be absurd, so treat existing entries as proof the flow is not
+ * needed — and as implicit sight of the v1 disclaimer, which those builds
+ * carried in Settings. A later disclaimer revision still gates them, because
+ * the acknowledged version is recorded rather than merely set.
+ */
+async function backfillOnboardingForUpgrade(db: SQLiteDatabase): Promise<void> {
+  const preferences = usePreferenceStore.getState();
+  if (!needsOnboarding(preferences.onboardingVersion)) return;
+
+  const hasData =
+    useTriggerStore.getState().triggers.length > 0 ||
+    useEpisodeStore.getState().episodes.length > 0 ||
+    useTreatmentStore.getState().treatments.length > 0;
+  if (!hasData) return;
+
+  await preferences.completeOnboarding(db);
+  await preferences.acknowledgeDisclaimer(db);
+}
 
 export function DatabaseProvider({ children }: { children: React.ReactNode }) {
   const [db, setDb] = useState<SQLiteDatabase | null>(null);
@@ -43,6 +68,7 @@ export function DatabaseProvider({ children }: { children: React.ReactNode }) {
           usePreferenceStore.getState().hydrate(database),
         ]);
         await useRiskStore.getState().recalculate(database);
+        await backfillOnboardingForUpgrade(database);
 
         if (!cancelled) {
           setIsReady(true);
