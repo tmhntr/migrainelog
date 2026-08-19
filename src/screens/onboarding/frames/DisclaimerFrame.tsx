@@ -34,11 +34,11 @@ export function DisclaimerFrame({
         </Text>
         <Text variant="body" tone="muted">
           It does <Text variant="bodyStrong">not</Text> predict migraines. The
-          risk number summarises what you have already logged.
+          risk number summarises what you&rsquo;ve already logged.
         </Text>
         <Text variant="body" tone="muted">
           Nothing here replaces advice from a clinician. Bringing your log to one
-          is exactly what it is for.
+          is exactly what it&rsquo;s for.
         </Text>
       </FramePoints>
 
