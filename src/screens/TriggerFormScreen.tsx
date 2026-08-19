@@ -55,11 +55,13 @@ export function TriggerFormScreen({
 
       if (editId) {
         await store.update(db, editId, data);
+        navigation.goBack();
       } else {
-        await store.add(db, data);
+        // A new entry opens onto its own detail screen. Replacing rather than
+        // pushing keeps the back arrow pointing at the list, not a spent form.
+        const created = await store.add(db, data);
+        navigation.replace('TriggerDetail', { id: created.id });
       }
-
-      navigation.goBack();
     } catch (error) {
       Alert.alert('Could not save', 'The trigger was not saved. Try again.');
     } finally {
