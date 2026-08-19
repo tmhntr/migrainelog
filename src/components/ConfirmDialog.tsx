@@ -10,6 +10,12 @@ export interface ConfirmDialogProps {
   message: string;
   /** Names the actual action, e.g. "Delete episode" — never a bare "Confirm". */
   confirmLabel?: string;
+  /**
+   * Tints the confirm action as destructive. On by default because most
+   * confirmations here guard a deletion; benign interruptions turn it off
+   * rather than dressing an ordinary choice up as a danger.
+   */
+  destructive?: boolean;
   onConfirm: () => void;
   onCancel: () => void;
 }
@@ -19,6 +25,7 @@ export function ConfirmDialog({
   title,
   message,
   confirmLabel = 'Delete',
+  destructive = true,
   onConfirm,
   onCancel,
 }: ConfirmDialogProps): React.JSX.Element {
@@ -57,7 +64,11 @@ export function ConfirmDialog({
             }}
           >
             <Button label="Cancel" variant="secondary" onPress={onCancel} />
-            <Button label={confirmLabel} variant="danger" onPress={onConfirm} />
+            <Button
+              label={confirmLabel}
+              variant={destructive ? 'danger' : 'primary'}
+              onPress={onConfirm}
+            />
           </View>
         </Surface>
       </View>
