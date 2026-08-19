@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   AccessibilityInfo,
+  Linking,
   Pressable,
   ScrollView,
   View,
@@ -21,6 +22,7 @@ import { RiskFrame } from './frames/RiskFrame';
 import { ResearchFrame } from './frames/ResearchFrame';
 import { ComfortFrame } from './frames/ComfortFrame';
 import { DoneFrame } from './frames/DoneFrame';
+import { PRIVACY_POLICY_URL } from './links';
 
 /** Where the flow hands control back to. */
 export type OnboardingExit = 'dashboard' | 'log-trigger';
@@ -38,7 +40,12 @@ interface FrameSpec {
   key: string;
   body: React.ReactNode;
   primaryLabel: string;
-  secondaryLabel?: string;
+  secondary?: {
+    label: string;
+    onPress: () => void;
+    /** `ghost` for a link out, `secondary` for a real alternative action. */
+    variant: 'ghost' | 'secondary';
+  };
   /** The disclaimer gate: no skip, no swipe, no advance until acknowledged. */
   gate?: boolean;
 }
@@ -84,6 +91,15 @@ export function OnboardingPager({
     };
   }, []);
 
+  const finish = useCallback(
+    async (exit: OnboardingExit) => {
+      if (mode === 'full') await completeOnboarding(db);
+      if (acknowledged) await acknowledgeDisclaimer(db);
+      onDone(exit);
+    },
+    [acknowledgeDisclaimer, acknowledged, completeOnboarding, db, mode, onDone],
+  );
+
   const frames = useMemo<FrameSpec[]>(() => {
     const disclaimer: FrameSpec = {
       key: 'disclaimer',
@@ -106,6 +122,13 @@ export function OnboardingPager({
         key: 'privacy',
         body: <PrivacyFrame />,
         primaryLabel: 'Continue',
+        secondary: {
+          label: 'Read the privacy policy',
+          onPress: () => {
+            void Linking.openURL(PRIVACY_POLICY_URL);
+          },
+          variant: 'ghost',
+        },
       },
       { key: 'what-you-log', body: <WhatYouLogFrame />, primaryLabel: 'Continue' },
       { key: 'risk', body: <RiskFrame />, primaryLabel: 'Continue' },
@@ -115,10 +138,16 @@ export function OnboardingPager({
         key: 'done',
         body: <DoneFrame />,
         primaryLabel: 'Log my first trigger',
-        secondaryLabel: 'Go to the dashboard',
+        secondary: {
+          label: 'Go to the dashboard',
+          onPress: () => {
+            void finish('dashboard');
+          },
+          variant: 'secondary',
+        },
       },
     ];
-  }, [acknowledged, mode]);
+  }, [acknowledged, finish, mode]);
 
   const current = frames[index];
   const isLast = index === frames.length - 1;
@@ -147,15 +176,6 @@ export function OnboardingPager({
       void completeOnboarding(db);
     }
   }, [completeOnboarding, db, isLast, mode]);
-
-  const finish = useCallback(
-    async (exit: OnboardingExit) => {
-      if (mode === 'full') await completeOnboarding(db);
-      if (acknowledged) await acknowledgeDisclaimer(db);
-      onDone(exit);
-    },
-    [acknowledgeDisclaimer, acknowledged, completeOnboarding, db, mode, onDone],
-  );
 
   const handlePrimary = useCallback(() => {
     if (isLast) {
@@ -286,13 +306,11 @@ export function OnboardingPager({
           onPress={handlePrimary}
         />
 
-        {current?.secondaryLabel !== undefined && (
+        {current?.secondary !== undefined && (
           <Button
-            label={current.secondaryLabel}
-            variant="secondary"
-            onPress={() => {
-              void finish('dashboard');
-            }}
+            label={current.secondary.label}
+            variant={current.secondary.variant}
+            onPress={current.secondary.onPress}
           />
         )}
       </View>
