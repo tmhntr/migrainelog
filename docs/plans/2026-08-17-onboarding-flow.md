@@ -61,7 +61,8 @@ Design notes per frame:
   to the study and never restated as something this app computes — see
   `docs/SURPRISAL_INTEGRATION.md`. Every outbound row is marked `Web ↗`: three
   frames after promising no network requests, an unlabelled link that opens a
-  browser reads as a broken promise.
+  browser reads as a broken promise. The in-app "How the risk score works" row
+  was dropped rather than shipped pointing at nothing.
 - **07** is the only configuration frame. Chips reuse `SettingsScreen`'s labels and
   write through `preference-store` immediately, repainting the frame so the choice
   is previewed rather than promised. No copy calls dark mode "easier on the eyes" —
@@ -79,12 +80,12 @@ Design notes per frame:
 | Presentation | One horizontal pager mounted *above* the tab navigator, so the dashboard never flashes behind it. `DatabaseProvider` already blocks render until hydration; the completion flag is read in the same pass. |
 | Navigation | Swipe or **Continue** forward, swipe or **‹ Back** back. Forward-swipe disabled on frame 02 until acknowledged. No auto-advance, no timers. |
 | Progress | Dots, not "3 of 8" — a count reads as homework. The active dot widens to a bar, so position survives greyscale (same shape-not-colour rule as the gauge). |
-| Skip | Top-right on frames 01 and 03–07. Confirms once, then jumps to the Dashboard. |
-| Persistence | Migration **v3** adds no table: the existing `preferences` key/value store takes `onboarding.completed_version`, `disclaimer.acknowledged_at`, `disclaimer.acknowledged_version`, hydrated alongside the theme preference. |
+| Skip | Top-right on frames 01 and 03–07. After the gate it confirms once, then jumps to the Dashboard. On frame 01 it jumps to the gate instead — there is nothing to skip *to* before the one frame that must be seen, so asking would be a pointless question. |
+| Persistence | No migration. The `preferences` table from v2 is a key/value store, so the three new keys (`onboarding_completed_version`, `disclaimer_acknowledged_version`, `disclaimer_acknowledged_at`) need no DDL. They hydrate alongside the theme preference. |
 | Completion | Marked when frame 08 is *reached*, before either button is pressed. A user who force-quits there has seen the flow. |
 | Re-entry | Settings → About → **Replay introduction**. Read-only: never clears data, and frame 07's chips reflect the current preference rather than resetting. |
 | Upgrades | A 1.0.0 user has no completion flag but has data. If any table has rows, mark onboarding complete silently and show only frame 02 if the disclaimer version has moved. |
-| Widget | Deep links (`migrainelog://quick-log/…`) bypass onboarding and go straight to the form — except that an unacknowledged disclaimer presents frame 02 first, as a sheet. |
+| Widget | The navigator, and with it deep-link handling (`migrainelog://add/trigger`), mounts only after the flow is dismissed, so a link arriving during a first launch waits rather than bypassing the disclaimer. In practice a widget cannot exist before the app's first launch, so this is close to unreachable — but it fails safe rather than around the gate. |
 | Accessibility | Each frame is one VoiceOver region read top to bottom; dots labelled "Step 3 of 8"; targets ≥ 48pt; contrast checked in both schemes; nothing conveyed by colour alone; under reduce-motion, frames cut instead of sliding. |
 | Tokens | No new ones. Headlines `title`, body `body`, footnotes `label`, eyebrows `caption` uppercased. |
 
@@ -141,7 +142,7 @@ store listing are matched, not rewritten.
 | `f6.body` | body | Today's score is a simple weighted tally, tuned by hand. A better-grounded one is being built on **surprisal** — a measure of how unusual a day's exposures are compared with your own history. |
 | `f6.citation` | caption | Turner DP, et al. Information-Theoretic Trigger Surprisal and Future Headache Activity. *JAMA Network Open.* 2025;8(11):e2542944. |
 | `f6.finding` | label | In that study each additional bit of surprisal came with roughly double the odds of a headache starting within 24 hours. |
-| `f6.links` | rows | How the risk score works · The research paper `↗` · Privacy policy `↗` · Support & contact `↗` |
+| `f6.links` | rows | The research paper `↗` · Privacy policy `↗` · Support & contact `↗` |
 | `f7.eyebrow` | caption | One setting |
 | `f7.headline` | title | Set the brightness now, not mid-attack. |
 | `f7.body` | body | Dark keeps the screen dim during an attack even when the rest of your phone is in light mode. Tap one to see it — the whole app changes with it. |
@@ -156,26 +157,31 @@ store listing are matched, not rewritten.
 
 ## Open questions
 
-1. **Does frame 06 belong in the flow?** It is the most skippable frame and the one
-   that convinces the sceptical user. The alternative is a single line on frame 05 —
-   "How the risk score works" — with the research living in Settings, trading
-   first-launch credibility for one fewer screen.
-2. **Does the in-app article exist?** Frame 06 links to "How the risk score works",
-   which is not built. Either write it in the same change or drop that row; a link
-   to nothing is worse than no link.
-3. **Frame 07's default.** *Match device* is honest, but someone installing during an
-   attack would be better served by dark. Preselecting dark is presumptuous on a well
-   day. Worth a decision rather than a default.
+1. **Does frame 06 belong in the flow?** *Kept.* It is the most skippable frame and
+   the one that convinces the sceptical user. Worth revisiting if the flow ever needs
+   to be shorter — the alternative is a single line on frame 05, with the research
+   living in Settings.
+2. **Does the in-app article exist?** *Resolved by dropping the row.* Frame 06 ships
+   three outbound links and no "How the risk score works"; a link to nothing is worse
+   than no link. Add the row back if the article gets written.
+3. **Frame 07's default.** *Kept as Match device* — the honest choice, though someone
+   installing during an attack would be better served by dark. Revisit on real usage
+   rather than a guess.
 
-## Files this would touch
+## Files
 
 | File | Change |
 |------|--------|
-| `src/screens/onboarding/OnboardingPager.tsx` | New — the pager and frame state |
-| `src/screens/onboarding/frames/*.tsx` | New — one component per frame |
-| `src/db/migrations.ts` | Bump to v3; no schema change, keys only |
-| `src/stores/preference-store.ts` | Onboarding completion + disclaimer ack |
-| `src/hooks/use-database.ts` | Read the completion flag during hydration |
-| `src/navigation/types.ts` | Onboarding route params |
+| `src/screens/onboarding/OnboardingPager.tsx` | New — the pager, frame specs, skip and gate logic |
+| `src/screens/onboarding/OnboardingFrame.tsx` | New — shared frame shell and the hairline point list |
+| `src/screens/onboarding/frames/*.tsx` | New — one component per frame (8) |
+| `src/stores/preference-store.ts` | Onboarding completion, disclaimer ack, replay, and the two gate predicates |
+| `src/hooks/use-database.ts` | Backfills both marks for an upgrading user with existing entries |
+| `App.tsx` | Mounts the flow above the navigator once hydrated; hands off to the trigger form via a navigation ref |
 | `src/screens/SettingsScreen.tsx` | **Replay introduction** in the About section |
-| `CLAUDE.md` | Note the flow and the disclaimer-version rule |
+| `src/components/ConfirmDialog.tsx` | `destructive` flag, so skipping isn't tinted like a deletion |
+| `src/stores/__tests__/preference-store.test.ts` | New — version gates and marks |
+| `src/screens/__tests__/OnboardingPager.test.tsx` | New — the disclaimer trap and disclaimer-only mode |
+
+No migration: `preferences` (v2) is a key/value table, so the new keys need no DDL.
+No new navigation routes: the flow sits above the navigator rather than inside it.

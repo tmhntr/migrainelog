@@ -36,7 +36,7 @@ export function RiskFrame(): React.JSX.Element {
       </View>
 
       <Text variant="body" tone="muted">
-        It weighs four things you have already entered: how heavy your recent
+        It weighs four things you&rsquo;ve already entered: how heavy your recent
         triggers were, how many different kinds, how often episodes have come
         lately, and how recently the last one ended.
       </Text>

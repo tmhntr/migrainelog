@@ -68,6 +68,14 @@ npm run typecheck             # Run tsc --noEmit
 - Zustand stores in `src/stores/` (trigger, episode, treatment, risk) hydrate from SQLite on app launch and write-through on mutations. The risk store recomputes after mutations to other stores.
 - The widget reads from a shared SQLite database or shared UserDefaults/SharedPreferences for the risk level value.
 - Navigation structure: bottom tabs for Dashboard, Triggers, Episodes, Treatments, Settings. Each tab has its own native-stack navigator under `src/navigation/stacks/`.
+- First launch runs `src/screens/onboarding/OnboardingPager.tsx`, mounted *above* the tab navigator in `App.tsx` so the dashboard never flashes behind it. It is held in local state, not derived from the store, because the last frame records completion on arrival.
+
+## Onboarding and the Disclaimer
+
+The eight-frame flow is specified in [`docs/plans/2026-08-17-onboarding-flow.md`](docs/plans/2026-08-17-onboarding-flow.md), which carries the copy deck. Two rules matter when changing it:
+
+- **The disclaimer frame is a gate.** It cannot be skipped or swiped past, and its acknowledgement is recorded on *leaving* the frame, not on ticking the box. App Review guideline 1.4.1 leans on this, and tests lock it.
+- **`ONBOARDING_VERSION` and `DISCLAIMER_VERSION` in `preference-store.ts` move independently.** Bump `DISCLAIMER_VERSION` whenever the disclaimer wording changes materially — an acknowledgement covers the text that was actually read, so a revision has to be shown again. Bumping `ONBOARDING_VERSION` re-runs the whole flow for everyone, which is a real interruption; most changes should leave it alone. Both live in the `preferences` key/value table, so neither needs a migration.
 
 ## Commit Messages
 

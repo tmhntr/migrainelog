@@ -31,7 +31,7 @@ export function DoneFrame(): React.JSX.Element {
 
       <Text variant="body" tone="muted">
         The dashboard is the whole app: your reading at the top, the three log
-        buttons under it, and everything you have recorded below that.
+        buttons under it, and everything you&rsquo;ve recorded below that.
       </Text>
 
       <Text variant="label" tone="faint">
