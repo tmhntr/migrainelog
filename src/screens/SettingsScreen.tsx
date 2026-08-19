@@ -24,6 +24,7 @@ export function SettingsScreen(_props: SettingsScreenProps) {
   const [confirmVisible, setConfirmVisible] = useState(false);
   const themePreference = usePreferenceStore((s) => s.themePreference);
   const setThemePreference = usePreferenceStore((s) => s.setThemePreference);
+  const replayOnboarding = usePreferenceStore((s) => s.replayOnboarding);
 
   const handleClearData = useCallback(async () => {
     setConfirmVisible(false);
@@ -73,6 +74,16 @@ export function SettingsScreen(_props: SettingsScreenProps) {
             stored locally on your device.
           </Text>
         </Surface>
+
+        <View style={{ paddingHorizontal: theme.space.lg }}>
+          <Button
+            label="Replay introduction"
+            variant="secondary"
+            onPress={() => {
+              void replayOnboarding(db);
+            }}
+          />
+        </View>
       </Section>
 
       <Section title="Data">
