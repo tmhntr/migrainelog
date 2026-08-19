@@ -5,6 +5,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useTheme } from '../../../theme';
 import { Text } from '../../../components/ui';
 import { OnboardingFrame } from '../OnboardingFrame';
+import { PRIVACY_POLICY_URL, RESEARCH_PAPER_URL, SUPPORT_URL } from '../links';
 
 interface ExternalLink {
   label: string;
@@ -12,9 +13,9 @@ interface ExternalLink {
 }
 
 const LINKS: ExternalLink[] = [
-  { label: 'The research paper', url: 'https://doi.org/10.1001/jamanetworkopen.2025.42944' },
-  { label: 'Privacy policy', url: 'https://tmhntr.github.io/migrainelog/privacy-policy.html' },
-  { label: 'Support & contact', url: 'https://tmhntr.github.io/migrainelog/support.html' },
+  { label: 'The research paper', url: RESEARCH_PAPER_URL },
+  { label: 'Privacy policy', url: PRIVACY_POLICY_URL },
+  { label: 'Support & contact', url: SUPPORT_URL },
 ];
 
 /**
