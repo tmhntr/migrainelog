@@ -546,3 +546,35 @@ export async function listRecentEvents(
     eventType: row.event_type as BaseEvent['eventType'],
   }));
 }
+
+// ---------------------------------------------------------------------------
+// Preferences (key-value)
+// ---------------------------------------------------------------------------
+
+interface PreferenceRow {
+  value: string;
+}
+
+export async function getPreference(
+  db: SQLiteDatabase,
+  key: string
+): Promise<string | null> {
+  const row = await db.getFirstAsync<PreferenceRow>(
+    'SELECT value FROM preferences WHERE key = ?;',
+    [key]
+  );
+  return row?.value ?? null;
+}
+
+export async function setPreference(
+  db: SQLiteDatabase,
+  key: string,
+  value: string
+): Promise<void> {
+  await db.runAsync(
+    `INSERT INTO preferences (key, value, updated_at)
+     VALUES (?, ?, datetime('now'))
+     ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at;`,
+    [key, value]
+  );
+}

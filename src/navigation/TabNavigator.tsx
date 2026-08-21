@@ -7,28 +7,34 @@ import { TriggersStack } from './stacks/TriggersStack';
 import { EpisodesStack } from './stacks/EpisodesStack';
 import { TreatmentsStack } from './stacks/TreatmentsStack';
 import { SettingsStack } from './stacks/SettingsStack';
+import { useTheme } from '../theme';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
-const ACTIVE_COLOR = '#6200EE';
-const INACTIVE_COLOR = '#757575';
-
 export function TabNavigator(): React.JSX.Element {
+  const theme = useTheme();
+
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: ACTIVE_COLOR,
-        tabBarInactiveTintColor: INACTIVE_COLOR,
+        tabBarActiveTintColor: theme.colors.accent,
+        tabBarInactiveTintColor: theme.colors.inkFaint,
+        tabBarStyle: {
+          backgroundColor: theme.colors.surface,
+          borderTopColor: theme.colors.border,
+          borderTopWidth: theme.border.hairline,
+        },
+        tabBarLabelStyle: theme.type.caption,
       }}
     >
       <Tab.Screen
         name="DashboardTab"
         component={DashboardStack}
         options={{
-          tabBarLabel: 'Dashboard',
+          tabBarLabel: 'Today',
           tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="dashboard" size={size} color={color} />
+            <MaterialIcons name="insights" size={size} color={color} />
           ),
         }}
       />
@@ -38,7 +44,7 @@ export function TabNavigator(): React.JSX.Element {
         options={{
           tabBarLabel: 'Triggers',
           tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="warning" size={size} color={color} />
+            <MaterialIcons name="change-history" size={size} color={color} />
           ),
         }}
       />
@@ -48,7 +54,7 @@ export function TabNavigator(): React.JSX.Element {
         options={{
           tabBarLabel: 'Episodes',
           tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="flash-on" size={size} color={color} />
+            <MaterialIcons name="blur-on" size={size} color={color} />
           ),
         }}
       />
@@ -58,7 +64,7 @@ export function TabNavigator(): React.JSX.Element {
         options={{
           tabBarLabel: 'Treatments',
           tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="healing" size={size} color={color} />
+            <MaterialIcons name="medication" size={size} color={color} />
           ),
         }}
       />
@@ -68,7 +74,7 @@ export function TabNavigator(): React.JSX.Element {
         options={{
           tabBarLabel: 'Settings',
           tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="settings" size={size} color={color} />
+            <MaterialIcons name="tune" size={size} color={color} />
           ),
         }}
       />

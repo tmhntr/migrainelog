@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>NSExtension</key>
+    <dict>
+      <key>NSExtensionPointIdentifier</key>
+      <string>com.apple.widgetkit-extension</string>
+    </dict>
+    <!--
+      Registers the same MaterialIcons face the app renders through
+      @expo/vector-icons, so the widget's iconography is identical to the app's
+      rather than an SF Symbols approximation. See MaterialIcon.swift.
+    -->
+    <key>UIAppFonts</key>
+    <array>
+      <string>MaterialIcons.ttf</string>
+    </array>
+  </dict>
+</plist>

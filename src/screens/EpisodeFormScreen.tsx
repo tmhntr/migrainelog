@@ -1,27 +1,21 @@
 import React, { useLayoutEffect, useMemo, useState } from 'react';
-import {
-  Alert,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Alert, Switch, View } from 'react-native';
 
 import type { EpisodeFormScreenProps } from '../navigation/types';
 import { useDatabase } from '../hooks/use-database';
 import { useEpisodeStore } from '../stores/episode-store';
+import { useTheme } from '../theme';
 import { SeveritySlider } from '../components/SeveritySlider';
 import { SymptomPicker } from '../components/SymptomPicker';
 import { DateTimePicker } from '../components/DateTimePicker';
+import { Button, Field, Input, Screen, Surface, Text } from '../components/ui';
 import { formatISO, parseISO } from '../utils/date-helpers';
 
 export function EpisodeFormScreen({
   navigation,
   route,
 }: EpisodeFormScreenProps): React.JSX.Element {
+  const theme = useTheme();
   const db = useDatabase();
   const store = useEpisodeStore();
   const editId = route.params?.id;
@@ -45,7 +39,7 @@ export function EpisodeFormScreen({
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: editId ? 'Edit Episode' : 'New Episode',
+      title: editId ? 'Edit episode' : 'New episode',
     });
   }, [navigation, editId]);
 
@@ -72,130 +66,85 @@ export function EpisodeFormScreen({
 
       if (editId) {
         await store.update(db, editId, data);
+        navigation.goBack();
       } else {
-        await store.add(db, data);
+        // A new entry opens onto its own detail screen. Replacing rather than
+        // pushing keeps the back arrow pointing at the list, not a spent form.
+        const created = await store.add(db, data);
+        navigation.replace('EpisodeDetail', { id: created.id });
       }
-
-      navigation.goBack();
     } catch (error) {
-      Alert.alert('Error', 'Failed to save episode. Please try again.');
+      Alert.alert('Could not save', 'The episode was not saved. Try again.');
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.label}>Severity</Text>
-      <SeveritySlider
-        value={severity}
-        onChange={setSeverity}
-        min={1}
-        max={10}
-      />
+    <Screen scroll gutter>
+      <Field label="Severity" hint="1 is mild, 10 is the worst you have had.">
+        <SeveritySlider value={severity} onChange={setSeverity} min={1} max={10} />
+      </Field>
 
-      <Text style={styles.label}>Symptoms</Text>
-      <SymptomPicker selected={symptoms} onChange={setSymptoms} />
+      <Field label="Symptoms">
+        <SymptomPicker selected={symptoms} onChange={setSymptoms} />
+      </Field>
 
-      <View style={styles.switchRow}>
-        <Text style={styles.label}>Aura</Text>
-        <Switch value={aura} onValueChange={setAura} />
-      </View>
+      <Surface style={{ paddingVertical: theme.space.md }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <View style={{ flex: 1, gap: 2 }}>
+            <Text variant="bodyStrong">Aura</Text>
+            <Text variant="label" tone="faint">
+              Visual or sensory changes before the pain
+            </Text>
+          </View>
+          <Switch
+            value={aura}
+            onValueChange={setAura}
+            accessibilityLabel="Aura"
+            trackColor={{
+              false: theme.colors.borderStrong,
+              true: theme.colors.accent,
+            }}
+            thumbColor={theme.colors.surfaceRaised}
+          />
+        </View>
+      </Surface>
 
-      <Text style={styles.label}>Duration (minutes)</Text>
-      <TextInput
-        style={styles.textInputSingle}
-        value={durationText}
-        onChangeText={setDurationText}
-        placeholder="e.g. 60"
-        placeholderTextColor="#999999"
-        keyboardType="numeric"
-      />
+      <Field label="Duration" hint="In minutes. Leave blank if it is still going.">
+        <Input
+          value={durationText}
+          onChangeText={setDurationText}
+          placeholder="60"
+          keyboardType="numeric"
+        />
+      </Field>
 
-      <Text style={styles.label}>Date & Time</Text>
-      <DateTimePicker value={timestamp} onChange={setTimestamp} />
+      <Field label="When it started">
+        <DateTimePicker value={timestamp} onChange={setTimestamp} />
+      </Field>
 
-      <Text style={styles.label}>Notes</Text>
-      <TextInput
-        style={styles.textInput}
-        value={notes}
-        onChangeText={setNotes}
-        placeholder="Optional notes..."
-        placeholderTextColor="#999999"
-        multiline
-        numberOfLines={3}
-        textAlignVertical="top"
-      />
+      <Field label="Notes">
+        <Input
+          value={notes}
+          onChangeText={setNotes}
+          placeholder="Anything worth remembering later"
+          multiline
+        />
+      </Field>
 
-      <TouchableOpacity
-        style={[styles.submitButton, submitting && styles.submitButtonDisabled]}
+      <Button
+        label={submitting ? 'Saving' : editId ? 'Save changes' : 'Save episode'}
+        size="lg"
         onPress={handleSubmit}
-        activeOpacity={0.7}
         disabled={submitting}
-      >
-        <Text style={styles.submitText}>
-          {submitting ? 'Saving...' : editId ? 'Update Episode' : 'Save Episode'}
-        </Text>
-      </TouchableOpacity>
-    </ScrollView>
+      />
+    </Screen>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5F5F5',
-  },
-  content: {
-    padding: 16,
-    gap: 12,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#333333',
-    marginTop: 4,
-  },
-  switchRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 8,
-  },
-  textInputSingle: {
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 14,
-    color: '#333333',
-  },
-  textInput: {
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 14,
-    color: '#333333',
-    minHeight: 80,
-  },
-  submitButton: {
-    backgroundColor: '#6200EE',
-    paddingVertical: 14,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  submitButtonDisabled: {
-    opacity: 0.6,
-  },
-  submitText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-});

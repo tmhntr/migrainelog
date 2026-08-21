@@ -1,11 +1,13 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import { BaseEvent, EventType } from '../models/event';
 import { Trigger } from '../models/trigger';
 import { Episode } from '../models/episode';
 import { Treatment } from '../models/treatment';
 import { formatRelativeTime } from '../utils/date-helpers';
+import { severityColors, useTheme } from '../theme';
+import { Surface, Text } from './ui';
 
 export interface EventCardProps {
   event: BaseEvent;
@@ -13,16 +15,16 @@ export interface EventCardProps {
   onPress?: () => void;
 }
 
-const TYPE_COLORS: Record<EventType, string> = {
-  trigger: '#FF9800',
-  episode: '#F44336',
-  treatment: '#2196F3',
-};
-
 const TYPE_LABELS: Record<EventType, string> = {
   trigger: 'Trigger',
   episode: 'Episode',
   treatment: 'Treatment',
+};
+
+/** Severity scales differ per type, so the ramp needs the bounds too. */
+const SEVERITY_RANGE: Partial<Record<EventType, { min: number; max: number }>> = {
+  trigger: { min: 1, max: 5 },
+  episode: { min: 1, max: 10 },
 };
 
 function getSeverity(event: BaseEvent, type: EventType): number | null {
@@ -47,88 +49,83 @@ function getSubtitle(event: BaseEvent, type: EventType): string | null {
 }
 
 export function EventCard({ event, type, onPress }: EventCardProps): React.JSX.Element {
-  const borderColor = TYPE_COLORS[type];
+  const theme = useTheme();
+  const tone = theme.colors.event[type];
   const severity = getSeverity(event, type);
   const subtitle = getSubtitle(event, type);
+  const range = SEVERITY_RANGE[type];
+
+  const severityTone =
+    severity !== null && range !== undefined
+      ? severityColors(theme.colors, severity, range.min, range.max)
+      : null;
+
+  const card = (
+    <Surface inset railColor={tone.base} style={{ gap: theme.space.sm }}>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <Text variant="caption" uppercase color={tone.base}>
+          {TYPE_LABELS[type]}
+        </Text>
+        <Text variant="data" tone="faint">
+          {formatRelativeTime(event.timestamp)}
+        </Text>
+      </View>
+
+      {subtitle !== null && (
+        <Text variant="heading" style={{ textTransform: 'capitalize' }}>
+          {subtitle}
+        </Text>
+      )}
+
+      {severity !== null && severityTone !== null && range !== undefined && (
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.space.sm }}>
+          <View
+            style={{
+              width: 26,
+              height: 26,
+              borderRadius: theme.radius.sm,
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: severityTone.soft,
+              borderWidth: theme.border.hairline,
+              borderColor: severityTone.base,
+            }}
+          >
+            <Text variant="data" color={severityTone.base}>
+              {severity}
+            </Text>
+          </View>
+          <Text variant="label" tone="faint">
+            of {range.max}
+          </Text>
+        </View>
+      )}
+
+      {event.notes !== null && event.notes !== '' && (
+        <Text variant="body" tone="muted" numberOfLines={2}>
+          {event.notes}
+        </Text>
+      )}
+    </Surface>
+  );
+
+  if (onPress === undefined) {
+    return card;
+  }
 
   return (
-    <TouchableOpacity
-      style={[styles.container, { borderLeftColor: borderColor }]}
+    <Pressable
+      accessibilityRole="button"
       onPress={onPress}
-      activeOpacity={onPress ? 0.7 : 1}
-      disabled={!onPress}
+      style={({ pressed }) => (pressed ? { opacity: 0.72 } : undefined)}
     >
-      <View style={styles.header}>
-        <View style={[styles.typeBadge, { backgroundColor: borderColor }]}>
-          <Text style={styles.typeBadgeText}>{TYPE_LABELS[type]}</Text>
-        </View>
-        <Text style={styles.timestamp}>{formatRelativeTime(event.timestamp)}</Text>
-      </View>
-      <View style={styles.body}>
-        {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
-        {severity !== null && (
-          <Text style={styles.severity}>Severity: {severity}</Text>
-        )}
-        {event.notes && (
-          <Text style={styles.notes} numberOfLines={2}>
-            {event.notes}
-          </Text>
-        )}
-      </View>
-    </TouchableOpacity>
+      {card}
+    </Pressable>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#FFFFFF',
-    borderLeftWidth: 4,
-    borderRadius: 8,
-    marginVertical: 4,
-    marginHorizontal: 8,
-    padding: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 6,
-  },
-  typeBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 4,
-  },
-  typeBadgeText: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  timestamp: {
-    fontSize: 12,
-    color: '#888888',
-  },
-  body: {
-    gap: 2,
-  },
-  subtitle: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#333333',
-    textTransform: 'capitalize',
-  },
-  severity: {
-    fontSize: 13,
-    color: '#666666',
-  },
-  notes: {
-    fontSize: 13,
-    color: '#999999',
-    marginTop: 4,
-  },
-});

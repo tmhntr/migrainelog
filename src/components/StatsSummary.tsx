@@ -1,7 +1,9 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import { DashboardStats } from '../utils/statistics';
+import { useTheme } from '../theme';
+import { Surface, Text } from './ui';
 
 export interface StatsSummaryProps {
   stats: DashboardStats;
@@ -10,79 +12,68 @@ export interface StatsSummaryProps {
 interface StatCard {
   label: string;
   value: string;
+  /** Shown beside the value — units belong with the number, not the label. */
+  unit?: string;
 }
 
 function buildCards(stats: DashboardStats): StatCard[] {
   return [
     {
-      label: 'Episodes (7d)',
+      label: 'Episodes',
       value: String(stats.episodeCount7d),
+      unit: 'last 7 days',
     },
     {
-      label: 'Episodes (30d)',
+      label: 'Episodes',
       value: String(stats.episodeCount30d),
+      unit: 'last 30 days',
     },
     {
-      label: 'Top Trigger',
+      label: 'Most logged trigger',
       value: stats.topTriggerCategory
         ? stats.topTriggerCategory.charAt(0).toUpperCase() +
           stats.topTriggerCategory.slice(1)
-        : 'N/A',
+        : '—',
     },
     {
-      label: 'Effectiveness',
+      label: 'Treatments that helped',
       value:
         stats.treatmentEffectivenessPercent !== null
           ? `${stats.treatmentEffectivenessPercent}%`
-          : 'N/A',
+          : '—',
     },
   ];
 }
 
 export function StatsSummary({ stats }: StatsSummaryProps): React.JSX.Element {
+  const theme = useTheme();
   const cards = buildCards(stats);
 
   return (
-    <View style={styles.container}>
+    <View
+      style={{
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        paddingHorizontal: theme.space.lg,
+        gap: theme.space.md,
+      }}
+    >
       {cards.map((card) => (
-        <View key={card.label} style={styles.card}>
-          <Text style={styles.cardValue}>{card.value}</Text>
-          <Text style={styles.cardLabel}>{card.label}</Text>
-        </View>
+        <Surface
+          key={`${card.label}-${card.unit ?? ''}`}
+          style={{ flex: 1, minWidth: '45%', gap: theme.space.xs }}
+        >
+          <Text variant="metric">{card.value}</Text>
+          <Text variant="label" tone="muted">
+            {card.label}
+          </Text>
+          {card.unit !== undefined && (
+            <Text variant="caption" tone="faint" uppercase>
+              {card.unit}
+            </Text>
+          )}
+        </Surface>
       ))}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingHorizontal: 4,
-    gap: 8,
-  },
-  card: {
-    flex: 1,
-    minWidth: '45%',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 8,
-    padding: 12,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 2,
-    elevation: 1,
-  },
-  cardValue: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#333333',
-  },
-  cardLabel: {
-    fontSize: 12,
-    color: '#888888',
-    marginTop: 4,
-    textAlign: 'center',
-  },
-});

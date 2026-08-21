@@ -5,32 +5,75 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
+    "userInterfaceStyle": "automatic",
+    "scheme": "migrainelog",
     "ios": {
-      "supportsTablet": true
+      "icon": "./assets/MigraineLogIconV1.icon",
+      "supportsTablet": false,
+      "appleTeamId": "4TBM93UCZ7",
+      "bundleIdentifier": "dev.tmhntr.migrainelog",
+      "entitlements": {
+        "com.apple.security.application-groups": [
+          "group.dev.tmhntr.migrainelog"
+        ]
+      },
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#000000"
       },
-      "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "dev.tmhntr.migrainelog"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "cfa4e0c4-4157-4328-bfb3-7d4ab5b51f2b"
+        "projectId": "cfa4e0c4-4157-4328-bfb3-7d4ab5b51f2b",
+        "build": {
+          "experimental": {
+            "ios": {
+              "appExtensions": [
+                {
+                  "bundleIdentifier": "dev.tmhntr.migrainelog.widget",
+                  "targetName": "widget",
+                  "entitlements": {
+                    "com.apple.security.application-groups": [
+                      "group.dev.tmhntr.migrainelog"
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
       }
     },
-    "owner": "migrainelog"
+    "owner": "migrainelog",
+    "plugins": [
+      "@bacons/apple-targets",
+      "expo-font",
+      "expo-sqlite",
+      "expo-status-bar",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#F2F0EC",
+          "dark": {
+            "image": "./assets/splash-icon.png",
+            "resizeMode": "contain",
+            "backgroundColor": "#0F1013"
+          }
+        }
+      ],
+      "@react-native-community/datetimepicker"
+    ]
   }
 }

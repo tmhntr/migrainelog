@@ -1,0 +1,48 @@
+name: EAS Production Build & Submit
+
+# Triggered when semantic-release publishes a GitHub Release. Beta pre-releases
+# cut from `dev` are skipped (see the `prerelease` guard below); only production
+# releases from `main` build and submit to the App Store.
+on:
+  release:
+    types:
+      - published
+  workflow_dispatch:
+    inputs:
+      submit:
+        description: "Submit the build to App Store Connect after building"
+        type: boolean
+        default: true
+
+jobs:
+  build-submit:
+    name: iOS Production
+    runs-on: ubuntu-latest
+    # Skip beta pre-releases (dev channel). workflow_dispatch has no release
+    # payload, so `prerelease` is empty there and the job runs.
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.release.prerelease == false }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build iOS (production)
+        run: eas build --platform ios --profile production --non-interactive --wait
+
+      - name: Submit to App Store Connect
+        if: ${{ github.event_name == 'release' || inputs.submit }}
+        run: eas submit --platform ios --profile production --latest --non-interactive

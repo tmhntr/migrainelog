@@ -1,6 +1,9 @@
 import React, { useCallback } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { View } from 'react-native';
 import Slider from '@react-native-community/slider';
+
+import { severityColors, useTheme } from '../theme';
+import { Text } from './ui';
 
 export interface SeveritySliderProps {
   value: number;
@@ -10,14 +13,6 @@ export interface SeveritySliderProps {
   label?: string;
 }
 
-function severityColor(value: number, min: number, max: number): string {
-  const ratio = (value - min) / (max - min);
-  if (ratio <= 0.3) return '#4CAF50'; // green
-  if (ratio <= 0.6) return '#FFC107'; // amber
-  if (ratio <= 0.8) return '#FF9800'; // orange
-  return '#F44336'; // red
-}
-
 export function SeveritySlider({
   value,
   onChange,
@@ -25,7 +20,8 @@ export function SeveritySlider({
   max = 5,
   label,
 }: SeveritySliderProps): React.JSX.Element {
-  const color = severityColor(value, min, max);
+  const theme = useTheme();
+  const tone = severityColors(theme.colors, value, min, max);
 
   const handleValueChange = useCallback(
     (val: number) => {
@@ -35,77 +31,56 @@ export function SeveritySlider({
   );
 
   return (
-    <View style={styles.container}>
-      {label && <Text style={styles.label}>{label}</Text>}
-      <View style={styles.sliderRow}>
-        <Text style={styles.rangeLabel}>{min}</Text>
-        <View style={styles.sliderWrapper}>
+    <View style={{ gap: theme.space.sm }}>
+      {label !== undefined && (
+        <Text variant="caption" tone="faint" uppercase>
+          {label}
+        </Text>
+      )}
+
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.space.md }}>
+        {/* The current value reads as the primary figure; the slider is the control. */}
+        <View
+          style={{
+            width: theme.minTouchTarget,
+            height: theme.minTouchTarget,
+            borderRadius: theme.radius.sm,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: tone.soft,
+            borderWidth: theme.border.hairline,
+            borderColor: tone.base,
+          }}
+        >
+          <Text variant="metric" color={tone.base}>
+            {value}
+          </Text>
+        </View>
+
+        <View style={{ flex: 1 }}>
           <Slider
-            style={styles.slider}
+            style={{ height: theme.minTouchTarget }}
             value={value}
             onValueChange={handleValueChange}
             minimumValue={min}
             maximumValue={max}
             step={1}
-            minimumTrackTintColor={color}
-            maximumTrackTintColor="#DDDDDD"
-            thumbTintColor={color}
+            minimumTrackTintColor={tone.base}
+            maximumTrackTintColor={theme.colors.border}
+            thumbTintColor={tone.base}
+            accessibilityLabel={label ?? 'Severity'}
+            accessibilityValue={{ min, max, now: value }}
           />
-        </View>
-        <Text style={styles.rangeLabel}>{max}</Text>
-      </View>
-      <View style={styles.valueRow}>
-        <View style={[styles.valueIndicator, { backgroundColor: color }]}>
-          <Text style={styles.valueText}>{value}</Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Text variant="caption" tone="faint">
+              {min}
+            </Text>
+            <Text variant="caption" tone="faint">
+              {max}
+            </Text>
+          </View>
         </View>
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 8,
-    paddingVertical: 8,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#333333',
-    marginBottom: 8,
-  },
-  sliderRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  rangeLabel: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#666666',
-    width: 20,
-    textAlign: 'center',
-  },
-  sliderWrapper: {
-    flex: 1,
-  },
-  slider: {
-    height: 40,
-  },
-  valueRow: {
-    alignItems: 'center',
-    marginTop: 4,
-  },
-  valueIndicator: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  valueText: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#FFFFFF',
-  },
-});

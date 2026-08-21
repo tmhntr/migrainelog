@@ -1,5 +1,5 @@
 import React, { useMemo, useCallback } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import type { DashboardScreenProps } from '../navigation/types';
 import type { EventType, BaseEvent } from '../models/event';
@@ -9,11 +9,13 @@ import { useEpisodeStore } from '../stores/episode-store';
 import { useTreatmentStore } from '../stores/treatment-store';
 import { useDatabase } from '../hooks/use-database';
 import { useInterval } from '../hooks/use-interval';
+import { useTheme } from '../theme';
 import { computeDashboardStats } from '../utils/statistics';
 import { RiskGauge } from '../components/RiskGauge';
 import { QuickLogButton } from '../components/QuickLogButton';
 import { StatsSummary } from '../components/StatsSummary';
 import { EventCard } from '../components/EventCard';
+import { Screen, Section, Text } from '../components/ui';
 
 const RISK_RECALC_INTERVAL = 15 * 60 * 1000;
 const RECENT_EVENTS_LIMIT = 10;
@@ -24,6 +26,7 @@ interface MergedEvent {
 }
 
 export function DashboardScreen({ navigation }: DashboardScreenProps) {
+  const theme = useTheme();
   const db = useDatabase();
   const { score, label, recalculate } = useRiskStore();
   const { triggers } = useTriggerStore();
@@ -74,59 +77,36 @@ export function DashboardScreen({ navigation }: DashboardScreenProps) {
   );
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <Screen scroll contentContainerStyle={{ paddingBottom: theme.space.xxxl }}>
       <RiskGauge score={score} label={label} />
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Quick Log</Text>
+      <Section title="Log something">
         <QuickLogButton onPress={handleQuickLog} />
-      </View>
+      </Section>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Summary</Text>
+      <Section title="Your patterns">
         <StatsSummary stats={stats} />
-      </View>
+      </Section>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Recent Events</Text>
+      <Section title="Recent">
         {recentEvents.length === 0 ? (
-          <Text style={styles.emptyText}>No events logged yet.</Text>
+          <View style={{ paddingHorizontal: theme.space.lg, paddingVertical: theme.space.xl }}>
+            <Text variant="body" tone="faint" style={{ textAlign: 'center' }}>
+              Nothing logged yet. Anything you record shows up here.
+            </Text>
+          </View>
         ) : (
-          recentEvents.map((item) => (
-            <EventCard
-              key={`${item.type}-${item.event.id}`}
-              event={item.event}
-              type={item.type}
-            />
-          ))
+          <View style={{ gap: theme.space.md }}>
+            {recentEvents.map((item) => (
+              <EventCard
+                key={`${item.type}-${item.event.id}`}
+                event={item.event}
+                type={item.type}
+              />
+            ))}
+          </View>
         )}
-      </View>
-    </ScrollView>
+      </Section>
+    </Screen>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5F5F5',
-  },
-  content: {
-    paddingVertical: 16,
-    gap: 16,
-  },
-  section: {
-    gap: 8,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333333',
-    marginHorizontal: 16,
-  },
-  emptyText: {
-    fontSize: 14,
-    color: '#888888',
-    textAlign: 'center',
-    paddingVertical: 24,
-  },
-});
